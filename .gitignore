@@ -14,3 +14,6 @@ browser_traces/
 
 # SDD scratch (task briefs, ledger, review packages)
 .superpowers/
+
+# Generated demo artifacts (produced by sourcerer.demo.generate)
+web/demo/
