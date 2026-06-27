@@ -108,4 +108,4 @@ Design spec and the Phase-1 implementation plan live under [`docs/`](docs/).
 
 ## License
 
-No license is currently declared (all rights reserved). See repository settings.
+[MIT](LICENSE) © 2026 Dr-Inker.
