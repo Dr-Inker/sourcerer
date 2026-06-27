@@ -4,7 +4,6 @@ from sourcerer.models import Brief
 from sourcerer.github import MockGitHub
 from sourcerer.web import MockFetcher, PageContent
 from sourcerer.llm import MockLLM
-from sourcerer.research import research
 from sourcerer.evals.scorers import grounding_score
 from sourcerer.trace import reset_spans, get_spans
 async def test_end_to_end_one_candidate_is_grounded():
@@ -19,7 +18,7 @@ async def test_end_to_end_one_candidate_is_grounded():
     llm = MockLLM(lambda s, u: payload)
     results = await run(Brief(role="Rust systems engineer", languages=["rust"], max_candidates=1), gh, fetcher, llm, model="m")
     assert len(results) == 1
-    bundle = await research(results[0].candidate, gh, fetcher)
-    assert grounding_score(results[0], bundle) == 1.0
-    assert results[0].claims[0].citation == "https://github.com/rustdev/fastdb"
+    assessment, bundle = results[0]
+    assert grounding_score(assessment, bundle) == 1.0
+    assert assessment.claims[0].citation == "https://github.com/rustdev/fastdb"
     assert {"discover", "research", "synthesize"} <= {s["name"] for s in get_spans()}

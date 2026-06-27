@@ -1,5 +1,18 @@
 # tests/test_web.py
-from sourcerer.web import MockFetcher, PageContent, extract_text
+from sourcerer.web import HttpFetcher, MockFetcher, PageContent, extract_text
+
+
+async def test_resolve_is_public_rejects_unsafe_ips():
+    f = HttpFetcher()
+    for url in [
+        "http://127.0.0.1/",
+        "http://10.0.0.1/",
+        "http://192.168.1.1/",
+        "http://169.254.169.254/latest/meta-data/",
+        "http://[::1]/",
+    ]:
+        assert await f._resolve_is_public(url) is False
+    assert await f._resolve_is_public("http://8.8.8.8/") is True
 
 
 async def test_mock_fetch_returns_known_page():
