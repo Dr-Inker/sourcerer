@@ -2,7 +2,9 @@
 
 An AI **technical-sourcing agent**. Given a sourcing brief, it discovers an engineering candidate on GitHub, researches them from public sources, and produces a **grounded, cited fit-brief plus a personalized outreach draft** — where every factual claim must point at a real piece of gathered evidence, or it doesn't get made.
 
-> **Status: Phase 1 — vertical slice.** This is the end-to-end spine built test-first: a deterministic async pipeline with strict citation-grounding and an eval/tracing seam. The agentic browser, parallel fan-out, human-in-the-loop review UI, and the reply-loop are deliberately deferred to later phases (see [Roadmap](#roadmap)). Nothing here over-claims to be the finished product.
+**▶ Live demo — [drinkerlabs.info/sourcerer/](https://drinkerlabs.info/sourcerer/)** · pick a role, watch it run `discover → research → synthesize`, then read a grounded, cited brief: the grounding score, clickable citations, and the explicit list of things it *refused* to assert.
+
+> **Status: Phase 1 spine + a shipped public demo.** The end-to-end pipeline is built test-first — deterministic async, strict citation-grounding, an eval/tracing seam — and the live demo above replays real runs generated offline (Phase 2, Increment 1). The agentic browser, parallel fan-out, human-in-the-loop review UI, and the reply-loop are deliberately deferred to later phases (see [Roadmap](#roadmap)). Nothing here over-claims to be the finished product.
 
 ## Why grounding is the point
 
@@ -48,6 +50,8 @@ Each stage is wrapped in a trace span (`discover` / `research` / `synthesize`), 
 | `trace.py` | In-memory span recorder (portable seam ahead of a tracing backend) |
 | `pipeline.py` | `run(brief, …)` — discover → research → synthesize, traced |
 | `cli.py` | Command-line entry point |
+| `demo/schema.py` | `DemoRun` artifact + `to_demo_run` — serializes a run for the static demo; dedupes repeated claims |
+| `demo/generate.py` | Offline generator — runs the real pipeline over curated preset roles and writes the demo's cached JSON |
 
 `evals/golden.json` is a small labeled seed set (`brief → expected candidate`) kept for later precision scoring; it is not yet consumed by the scorers.
 
@@ -58,7 +62,7 @@ Requires **Python ≥ 3.12**.
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest            # 21 tests, fully network-free
+pytest            # 30 tests, fully network-free
 ```
 
 To run it for real against live GitHub + an LLM, copy `.env.example` to `.env` and fill it in:
@@ -94,7 +98,7 @@ The suite covers each module plus an end-to-end pipeline test (all mocks), inclu
 
 ## Roadmap
 
-Phase 1 is the spine. Deliberately deferred to later phases (each gets its own plan):
+Phase 1 is the spine; **Phase 2, Increment 1 — the public [live demo](https://drinkerlabs.info/sourcerer/)** (curated preset roles replaying real grounded runs, pure-static, no secrets on the public path) — is shipped. Still deliberately deferred to later phases (each gets its own plan):
 
 - LangGraph orchestration + parallel research fan-out
 - Agentic browser (Browser Use / Stagehand) for the open-web long tail
