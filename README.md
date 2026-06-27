@@ -67,12 +67,12 @@ To run it for real against live GitHub + an LLM, copy `.env.example` to `.env` a
 cp .env.example .env
 # GITHUB_TOKEN    — a GitHub token (public data only; raises the API rate limit)
 # <provider> key  — match SOURCERER_MODEL's provider (LiteLLM routes by model prefix):
-#                   the default anthropic/claude-sonnet-4.6 needs ANTHROPIC_API_KEY;
-#                   an openrouter/* model needs OPENROUTER_API_KEY
-# SOURCERER_MODEL — LiteLLM model id; defaults to anthropic/claude-sonnet-4.6
+#                   the default openrouter/z-ai/glm-5.1 needs OPENROUTER_API_KEY;
+#                   an anthropic/* model needs ANTHROPIC_API_KEY
+# SOURCERER_MODEL — LiteLLM model id; defaults to openrouter/z-ai/glm-5.1
 ```
 
-> The LLM is called through [LiteLLM](https://github.com/BerriAI/litellm), so `SOURCERER_MODEL` and the provider key you supply must match (e.g. an `anthropic/*` model needs an Anthropic-compatible key; an `openrouter/*` model needs `OPENROUTER_API_KEY`).
+> The LLM is called through [LiteLLM](https://github.com/BerriAI/litellm), so `SOURCERER_MODEL` and the provider key you supply must match (e.g. the default `openrouter/z-ai/glm-5.1` needs `OPENROUTER_API_KEY`; an `anthropic/*` model needs an Anthropic-compatible key).
 
 Then:
 
