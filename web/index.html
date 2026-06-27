@@ -8,6 +8,7 @@
 </head>
 <body>
   <main>
+    <nav class="topnav"><a href="https://drinkerlabs.info/">&larr; drinkerlabs.info</a></nav>
     <header>
       <h1>Sourcerer</h1>
       <p class="tagline">An AI technical-sourcing agent. It finds an engineer, researches them
@@ -23,6 +24,16 @@
     <nav id="presets" class="presets"></nav>
     <section id="stages" class="stages"></section>
     <section id="result" class="result"></section>
+    <section class="built">
+      <h2>How it&rsquo;s built</h2>
+      <ul>
+        <li><strong>Grounded, fail-closed.</strong> Every claim must cite a real evidence URL; anything the model can&rsquo;t ground is demoted to the &ldquo;unverified&rdquo; list <em>in code</em> — not left to prompt discipline.</li>
+        <li><strong>Clean async pipeline.</strong> <code>discover &rarr; research &rarr; synthesize</code>, with every external dependency (GitHub, web, LLM) behind a <code>typing.Protocol</code> and a deterministic mock — so the whole pipeline is unit-tested with zero network.</li>
+        <li><strong>Safe by construction.</strong> Robots-aware, SSRF-guarded fetch (loopback / private / cloud-metadata blocked); public sources only; secrets from the environment.</li>
+        <li><strong>Tested &amp; shipped.</strong> 30 network-free tests + CI, built test-first; GLM-5.1 via LiteLLM (swap the model with one env var).</li>
+      </ul>
+      <p class="muted">A portfolio project by <a href="https://drinkerlabs.info/">drinkerlabs.info</a> &middot; <a href="https://github.com/Dr-Inker/sourcerer" target="_blank" rel="noopener noreferrer">source &amp; design docs &#8599;</a></p>
+    </section>
   </main>
   <script src="sourcerer.js"></script>
 </body>
