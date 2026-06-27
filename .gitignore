@@ -10,3 +10,6 @@ venv/
 .DS_Store
 eval/results/
 browser_traces/
+
+# SDD scratch (task briefs, ledger, review packages)
+.superpowers/
