@@ -14,12 +14,12 @@ from sourcerer.demo.schema import DemoRun, to_demo_run
 PRESETS: list[dict] = [
     {"slug": "rust-systems-engineer", "label": "Rust systems engineer",
      "role": "Rust systems engineer", "languages": ["rust"]},
-    {"slug": "react-typescript-frontend", "label": "React / TypeScript frontend",
-     "role": "React TypeScript frontend engineer", "languages": ["typescript"]},
-    {"slug": "ml-infra-pytorch", "label": "ML infra (PyTorch)",
-     "role": "Machine learning infrastructure engineer", "languages": ["python"]},
-    {"slug": "go-distributed-systems", "label": "Go distributed systems",
-     "role": "Go distributed systems engineer", "languages": ["go"]},
+    {"slug": "deep-learning-engineer", "label": "Deep-learning (LLM) engineer",
+     "role": "Deep learning and LLM engineer", "languages": ["python"]},
+    {"slug": "go-cloud-native", "label": "Go / cloud-native engineer",
+     "role": "Go cloud-native and distributed-systems engineer", "languages": ["go"]},
+    {"slug": "open-source-js-ts", "label": "Open-source JS/TS engineer",
+     "role": "Open-source JavaScript / TypeScript engineer", "languages": ["typescript"]},
 ]
 
 

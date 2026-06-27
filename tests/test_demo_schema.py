@@ -62,3 +62,17 @@ def test_ungrounded_claim_gives_zero_grounding_score():
         unverified=[], outreach_draft="")
     run = to_demo_run(Brief(role="x", languages=[]), assessment, bundle, [], model="m", generated_at="t")
     assert run.grounding_score == 0.0
+
+
+def test_to_demo_run_dedupes_repeated_claim_text():
+    cand = Candidate(login="x", profile_url="https://github.com/x")
+    bundle = EvidenceBundle(candidate=cand, items=[])
+    assessment = Assessment(
+        candidate=cand, fit_score=0.5,
+        claims=[Claim(text="same claim", citation="https://github.com/x/a"),
+                Claim(text="same claim", citation="https://github.com/x/b"),
+                Claim(text="other claim", citation="https://github.com/x/c")],
+        unverified=[], outreach_draft="")
+    run = to_demo_run(Brief(role="x", languages=[]), assessment, bundle, [], model="m", generated_at="t")
+    assert [c.text for c in run.claims] == ["same claim", "other claim"]
+    assert run.claims[0].citation == "https://github.com/x/a"  # first occurrence wins

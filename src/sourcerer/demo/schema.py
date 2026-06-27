@@ -41,6 +41,18 @@ class DemoRun(BaseModel):
     generated_at: str
 
 
+def _dedupe_claims(claims: list) -> list[DemoClaim]:
+    """Keep the first occurrence of each unique claim text (the LLM sometimes repeats a claim)."""
+    seen: set[str] = set()
+    out: list[DemoClaim] = []
+    for c in claims:
+        if c.text in seen:
+            continue
+        seen.add(c.text)
+        out.append(DemoClaim(text=c.text, citation=c.citation))
+    return out
+
+
 def to_demo_run(brief: Brief, assessment: Assessment, bundle: EvidenceBundle,
                 spans: list[dict], model: str, generated_at: str) -> DemoRun:
     return DemoRun(
@@ -53,7 +65,7 @@ def to_demo_run(brief: Brief, assessment: Assessment, bundle: EvidenceBundle,
         ),
         fit_score=assessment.fit_score,
         grounding_score=grounding_score(assessment, bundle),
-        claims=[DemoClaim(text=c.text, citation=c.citation) for c in assessment.claims],
+        claims=_dedupe_claims(assessment.claims),
         unverified=list(assessment.unverified),
         outreach_draft=assessment.outreach_draft,
         evidence=[DemoEvidence(kind=e.kind, source_url=e.source_url, text=e.text)
