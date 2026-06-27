@@ -39,6 +39,8 @@ async def generate_one(preset: dict, gh: GitHubClient, fetcher: Fetcher, llm: LL
     brief = preset_to_brief(preset)
     reset_spans()
     results = await run(brief, gh, fetcher, llm, model)
+    if not results:
+        raise ValueError(f"no candidates discovered for preset {preset['slug']!r}")
     assessment, bundle = results[0]
     return to_demo_run(brief, assessment, bundle, get_spans(), model, generated_at)
 
@@ -57,8 +59,13 @@ async def main() -> None:
     generated_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
     runs: dict[str, DemoRun] = {}
     for preset in PRESETS:
-        runs[preset["slug"]] = await generate_one(preset, gh, fetcher, llm, settings.model, generated_at)
-        print(f"generated {preset['slug']}")
+        try:
+            runs[preset["slug"]] = await generate_one(preset, gh, fetcher, llm, settings.model, generated_at)
+            print(f"generated {preset['slug']}")
+        except Exception as e:
+            print(f"SKIP {preset['slug']}: {e}")
+    if not runs:
+        raise SystemExit("no presets generated — aborting (check keys / network)")
     out_dir = Path(__file__).resolve().parents[3] / "web" / "demo"
     write_demo(out_dir, runs, build_manifest(PRESETS))
     print(f"wrote {len(runs)} demo runs + manifest to {out_dir}")

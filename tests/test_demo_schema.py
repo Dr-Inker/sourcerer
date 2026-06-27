@@ -49,3 +49,16 @@ def test_demo_run_json_round_trips():
     assert data["claims"][0]["citation"] == "https://github.com/rustdev/fastdb"
     assert data["grounding_score"] == 1.0
     assert DemoRun.model_validate(data).candidate.login == "rustdev"
+
+
+def test_ungrounded_claim_gives_zero_grounding_score():
+    from sourcerer.models import Brief, Candidate, Evidence, EvidenceBundle, Claim, Assessment
+    from sourcerer.demo.schema import to_demo_run
+    cand = Candidate(login="x", profile_url="https://github.com/x")
+    bundle = EvidenceBundle(candidate=cand, items=[
+        Evidence(source_url="https://github.com/x/r", kind="github_repo", text="t")])
+    assessment = Assessment(candidate=cand, fit_score=0.5,
+        claims=[Claim(text="ungrounded", citation="https://evil.test")],
+        unverified=[], outreach_draft="")
+    run = to_demo_run(Brief(role="x", languages=[]), assessment, bundle, [], model="m", generated_at="t")
+    assert run.grounding_score == 0.0

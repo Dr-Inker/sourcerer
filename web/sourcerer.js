@@ -4,9 +4,12 @@ const STAGE_ORDER = ["discover", "research", "synthesize"];
 const STAGE_LABEL = { discover: "Discover", research: "Research", synthesize: "Synthesize" };
 
 function esc(s) {
-  const d = document.createElement("div");
-  d.textContent = s == null ? "" : String(s);
-  return d.innerHTML;
+  return (s == null ? "" : String(s))
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
@@ -73,15 +76,15 @@ async function playStages(box, spans) {
 function renderResult(out, d) {
   const c = d.candidate || {};
   const claims = (d.claims || [])
-    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(cl.citation)}" target="_blank" rel="noopener">source &#8599;</a></li>`)
+    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(cl.citation)}" target="_blank" rel="noopener noreferrer">source &#8599;</a></li>`)
     .join("");
   const unverified = (d.unverified || []).map((u) => `<li>${esc(u)}</li>`).join("");
   const sources = (d.evidence || [])
-    .map((e) => `<li><span class="kind">${esc(e.kind)}</span> <a href="${esc(e.source_url)}" target="_blank" rel="noopener">${esc(e.source_url)}</a></li>`)
+    .map((e) => `<li><span class="kind">${esc(e.kind)}</span> <a href="${esc(e.source_url)}" target="_blank" rel="noopener noreferrer">${esc(e.source_url)}</a></li>`)
     .join("");
   out.innerHTML = `
     <div class="cand">
-      <h3>${esc(c.name || c.login)} <a href="${esc(c.profile_url)}" target="_blank" rel="noopener">@${esc(c.login)} &#8599;</a></h3>
+      <h3>${esc(c.name || c.login)} <a href="${esc(c.profile_url)}" target="_blank" rel="noopener noreferrer">@${esc(c.login)} &#8599;</a></h3>
       <div class="scores">
         <span class="score">fit <b>${(d.fit_score ?? 0).toFixed(2)}</b></span>
         <span class="score grounded">grounding <b>${(d.grounding_score ?? 0).toFixed(2)}</b></span>
@@ -93,7 +96,7 @@ function renderResult(out, d) {
     <h4>Outreach draft</h4>
     <pre class="outreach">${esc(d.outreach_draft)}</pre>
     <details class="sources"><summary>Evidence (${(d.evidence || []).length})</summary><ul>${sources}</ul></details>
-    <p class="stamp muted">Cached sample run &middot; model ${esc(d.model)} &middot; generated ${esc(d.generated_at)} &middot; <a href="${REPO_URL}" target="_blank" rel="noopener">run it yourself &#8599;</a></p>
+    <p class="stamp muted">Cached sample run &middot; model ${esc(d.model)} &middot; generated ${esc(d.generated_at)} &middot; <a href="${REPO_URL}" target="_blank" rel="noopener noreferrer">run it yourself &#8599;</a></p>
   `;
 }
 

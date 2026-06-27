@@ -49,3 +49,15 @@ def test_write_demo_writes_manifest_and_per_slug(tmp_path):
     assert (tmp_path / "manifest.json").exists()
     assert json.loads((tmp_path / "rust.json").read_text())["candidate"]["login"] == "x"
     assert json.loads((tmp_path / "manifest.json").read_text())["presets"][0]["slug"] == "rust"
+
+
+async def test_generate_one_raises_when_no_candidates():
+    import pytest
+    from sourcerer.github import MockGitHub
+    from sourcerer.web import MockFetcher
+    from sourcerer.llm import MockLLM
+    from sourcerer.demo.generate import generate_one
+    preset = {"slug": "empty", "label": "E", "role": "Nobody", "languages": ["cobol"]}
+    with pytest.raises(ValueError):
+        await generate_one(preset, MockGitHub(users=[], repos={}), MockFetcher({}),
+                           MockLLM(lambda s, u: "{}"), model="m", generated_at="t")
