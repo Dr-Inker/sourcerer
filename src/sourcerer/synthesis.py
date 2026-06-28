@@ -14,7 +14,7 @@ def extract_json(raw: str) -> dict:
 def _system(voice: str) -> str:
     return (
         "You assess a software engineer's fit for the SOUGHT ROLE described in the user message, using ONLY the supplied evidence. "
-        "For every factual claim you make, cite the exact evidence source_url it comes from. "
+        "For every factual claim you make, cite the exact evidence source_url it comes from — this may be a repo URL, a specific file URL, or a web page; prefer the most specific source that supports the claim. "
         "If you cannot ground a statement in the evidence, put it in 'unverified' — never assert it as a claim. "
         f"Write the outreach in this voice: {voice}. "
         'Respond ONLY with JSON: {"fit_score":<0..1>,"claims":[{"text":"","citation":"<source_url>"}],"unverified":[],"outreach_draft":""}'

@@ -33,3 +33,28 @@ async def test_text_less_grounded_claim_is_skipped():
     a = await synthesize(cand, bundle, MockLLM(lambda s, u: payload), model="m")
     assert [c.text for c in a.claims] == ["Built fastdb"]
     assert a.unverified == []
+
+
+async def test_system_prompt_invites_file_url_citations():
+    cand = Candidate(login="x", name="X", profile_url="https://github.com/x")
+    bundle = EvidenceBundle(candidate=cand, items=[
+        Evidence(source_url="https://github.com/x/r", kind="github_repo", text="r")])
+    payload = json.dumps({"fit_score": 0.0, "claims": [], "unverified": [], "outreach_draft": ""})
+    llm = MockLLM(lambda s, u: payload)
+    await synthesize(cand, bundle, llm, model="m")
+    assert "file URL" in llm.calls[0]["system"]
+
+
+async def test_fabricated_file_path_dropped_real_one_kept():
+    cand = Candidate(login="rustdev", name="Rusty", profile_url="https://github.com/rustdev")
+    real = "https://github.com/rustdev/fastdb/blob/main/engine.rs"
+    bundle = EvidenceBundle(candidate=cand, items=[
+        Evidence(source_url=real, kind="github_file", text="fn engine() {}")])
+    payload = json.dumps({"fit_score": 0.8, "claims": [
+        {"text": "Wrote the storage engine", "citation": real},
+        {"text": "Wrote the query planner",
+         "citation": "https://github.com/rustdev/fastdb/blob/main/planner.rs"},
+    ], "unverified": [], "outreach_draft": "Hi"})
+    a = await synthesize(cand, bundle, MockLLM(lambda s, u: payload), model="m")
+    assert [c.text for c in a.claims] == ["Wrote the storage engine"]
+    assert "Wrote the query planner" in a.unverified
