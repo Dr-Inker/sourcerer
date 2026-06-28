@@ -1,4 +1,5 @@
 from typing import Protocol
+from urllib.parse import quote
 
 import httpx
 
@@ -70,7 +71,7 @@ class HttpGitHub:
         try:
             async with httpx.AsyncClient(timeout=20) as c:
                 r = await c.get(
-                    f"https://api.github.com/repos/{login}/{repo}/git/trees/{default_branch}",
+                    f"https://api.github.com/repos/{login}/{repo}/git/trees/{quote(default_branch, safe='/')}",
                     params={"recursive": "1"},
                     headers=self._h,
                 )
@@ -85,7 +86,7 @@ class HttpGitHub:
         try:
             async with httpx.AsyncClient(timeout=20) as c:
                 r = await c.get(
-                    f"https://api.github.com/repos/{login}/{repo}/contents/{path}",
+                    f"https://api.github.com/repos/{login}/{repo}/contents/{quote(path, safe='/')}",
                     headers={**self._h, "Accept": "application/vnd.github.raw"},
                 )
         except httpx.HTTPError:

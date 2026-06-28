@@ -10,7 +10,7 @@ async def _ingest_repo_files(gh: GitHubClient, login: str, repo: dict, budget: l
     branch = repo.get("default_branch") or "HEAD"
     name = repo["name"]
     try:
-        tree = await gh.list_paths(login, name, branch)
+        tree = await gh.list_paths(login, name, branch, ingest.MAX_TREE_PATHS)
     except Exception:
         return []
     targets: list[tuple[str, int]] = []

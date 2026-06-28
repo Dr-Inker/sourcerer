@@ -57,6 +57,7 @@ async def test_research_respects_total_evidence_byte_cap():
     gh = MockGitHub(users=[], repos={"rustdev": repos}, trees=trees, files=files)
     bundle = await research(cand, gh, MockFetcher({}))
     total = sum(len(e.text.encode("utf-8")) for e in bundle.items if e.kind == "github_file")
+    assert total > 0
     assert total <= ingest.MAX_TOTAL_EVIDENCE_BYTES
 
 
