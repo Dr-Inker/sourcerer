@@ -11,7 +11,7 @@ echo "1/3 generating cached demo runs (real GitHub + LLM)..."
 
 echo "2/3 publishing static assets to ${WEBROOT}..."
 mkdir -p "${WEBROOT}/demo"
-cp web/index.html web/sourcerer.css web/sourcerer.js "${WEBROOT}/"
+cp web/index.html web/sourcerer.css web/sourcerer.js web/og.png web/favicon.png web/apple-touch-icon.png "${WEBROOT}/"
 cp web/demo/*.json "${WEBROOT}/demo/"
 
 echo "3/3 done. Verify (the site uses an SPA fallback, so check CONTENT not just the 200 status):"
