@@ -1,0 +1,36 @@
+{
+  "presets": [
+    {
+      "slug": "rust-systems-engineer",
+      "label": "Rust systems engineer",
+      "role": "Rust systems engineer",
+      "languages": [
+        "rust"
+      ]
+    },
+    {
+      "slug": "deep-learning-engineer",
+      "label": "Deep-learning (LLM) engineer",
+      "role": "Deep learning and LLM engineer",
+      "languages": [
+        "python"
+      ]
+    },
+    {
+      "slug": "go-cloud-native",
+      "label": "Go / cloud-native engineer",
+      "role": "Go cloud-native and distributed-systems engineer",
+      "languages": [
+        "go"
+      ]
+    },
+    {
+      "slug": "open-source-js-ts",
+      "label": "Open-source JS/TS engineer",
+      "role": "Open-source JavaScript / TypeScript engineer",
+      "languages": [
+        "typescript"
+      ]
+    }
+  ]
+}

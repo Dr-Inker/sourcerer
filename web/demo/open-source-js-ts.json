@@ -1,0 +1,76 @@
+{
+  "role": "Open-source JavaScript / TypeScript engineer",
+  "languages": [
+    "typescript"
+  ],
+  "candidate": {
+    "login": "devon-ts",
+    "name": "Devon Park (sample persona)",
+    "profile_url": "https://example.com/gh/devon-ts"
+  },
+  "fit_score": 0.84,
+  "grounding_score": 1.0,
+  "grounding_fidelity": 1.0,
+  "claims": [
+    {
+      "text": "Authors prismstyle, a zero-runtime type-safe CSS-in-TS library",
+      "citation": "https://example.com/gh/devon-ts/prismstyle"
+    },
+    {
+      "text": "Implements compile-time CSS extraction from the type-checked AST",
+      "citation": "https://example.com/gh/devon-ts/prismstyle/blob/main/README.md"
+    },
+    {
+      "text": "Writes about removing the runtime cost of CSS-in-TS",
+      "citation": "https://example.com/blog/devon"
+    }
+  ],
+  "unverified": [],
+  "outreach_draft": "Hi Devon — prismstyle's compile-time extraction is a great fit for our DX work. Open to chatting?",
+  "evidence": [
+    {
+      "kind": "github_repo",
+      "source_url": "https://example.com/gh/devon-ts/prismstyle",
+      "text": "prismstyle (TypeScript, ★2210): a zero-runtime, type-safe CSS-in-TS library"
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/devon-ts/prismstyle/blob/main/README.md",
+      "text": "# prismstyle\nZero-runtime, fully type-safe CSS-in-TS with compile-time extraction."
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/devon-ts/prismstyle/blob/main/src/extract.ts",
+      "text": "export function extract(/* AST -> static CSS */) {}"
+    },
+    {
+      "kind": "web_page",
+      "source_url": "https://example.com/blog/devon",
+      "text": "Zero-runtime styling: How compile-time extraction removes the runtime cost of CSS-in-TS."
+    }
+  ],
+  "spans": [
+    {
+      "name": "discover",
+      "ms": 0.0,
+      "ok": true
+    },
+    {
+      "name": "research.files",
+      "ms": 0.01,
+      "ok": true
+    },
+    {
+      "name": "research",
+      "ms": 0.02,
+      "ok": true
+    },
+    {
+      "name": "synthesize",
+      "ms": 0.02,
+      "ok": true
+    }
+  ],
+  "model": "illustrative fixture (offline)",
+  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+}

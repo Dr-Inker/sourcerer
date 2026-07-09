@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Publish the static demo to the live webroot. Generation is now OPT-IN so a copy/CSS-only
-# change can ship without a paid, non-deterministic LLM regeneration:
+# Publish the static demo to the live webroot. The demo runs over FICTIONAL personas, so
+# generation is offline, deterministic, and needs no API keys (and web/demo/*.json is committed):
 #
-#   deploy/deploy-demo.sh             # publish the existing web/demo/*.json (no LLM calls)
-#   deploy/deploy-demo.sh generate    # regenerate the cached runs first (needs keys in .env), then publish
+#   deploy/deploy-demo.sh             # publish the committed web/demo/*.json (no regeneration)
+#   deploy/deploy-demo.sh generate    # regenerate the fictional runs offline, then publish
 #
 set -euo pipefail
 cd /opt/sourcerer

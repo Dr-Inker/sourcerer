@@ -2,9 +2,9 @@
 
 An AI **technical-sourcing agent**. Given a sourcing brief, it discovers an engineering candidate on GitHub, researches them from public sources, and produces a **grounded, cited fit-brief plus a personalized outreach draft** — where every factual claim must point at a real piece of gathered evidence, or it doesn't get made.
 
-**▶ Live demo — [drinkerlabs.info/sourcerer/](https://drinkerlabs.info/sourcerer/)** · pick a role, watch it run `discover → research → synthesize`, then read a grounded, cited brief: the grounding score, clickable citations, and the explicit list of things it *refused* to assert.
+**▶ Live demo — [drinkerlabs.info/sourcerer/](https://drinkerlabs.info/sourcerer/)** · pick a role, watch it run `discover → research → synthesize`, then read a grounded, cited brief: the grounding score, clickable citations, and the explicit list of things it *refused* to assert. The public demo runs over **fictional personas** (`example.com` links) so it never publishes a real person's data; point it at real GitHub users via the CLI.
 
-> **Status: Phase 1 spine + a shipped public demo.** The end-to-end pipeline is built test-first — deterministic async, strict citation-grounding, an eval/tracing seam — and the live demo above replays real runs generated offline (Phase 2, Increment 1). The agentic browser, parallel fan-out, human-in-the-loop review UI, and the reply-loop are deliberately deferred to later phases (see [Roadmap](#roadmap)). Nothing here over-claims to be the finished product.
+> **Status: Phase 1 spine + a shipped public demo.** The end-to-end pipeline is built test-first — deterministic async, strict citation-grounding, an eval/tracing seam — and the live demo above replays cached runs the pipeline generated over fictional personas, offline (Phase 2, Increment 1). The agentic browser, parallel fan-out, human-in-the-loop review UI, and the reply-loop are deliberately deferred to later phases (see [Roadmap](#roadmap)). Nothing here over-claims to be the finished product.
 
 ## Why grounding is the point
 
@@ -63,7 +63,7 @@ This tool researches real people, so its posture matters as much as its output (
 | `pipeline.py` | `run(brief, …)` — discover → research → synthesize, traced |
 | `cli.py` | Command-line entry point |
 | `demo/schema.py` | `DemoRun` artifact + `to_demo_run` — serializes a run for the static demo; dedupes repeated claims |
-| `demo/generate.py` | Offline generator — runs the real pipeline over curated preset roles and writes the demo's cached JSON |
+| `demo/generate.py` | Offline generator — runs the real pipeline over **fictional `example.com` personas** (deterministic mock clients, no keys) and writes the demo's cached JSON |
 
 `evals/golden.json` is a small labeled seed set (`brief → expected candidate`) kept for later precision scoring; it is not yet consumed by the scorers.
 

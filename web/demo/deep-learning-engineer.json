@@ -1,0 +1,74 @@
+{
+  "role": "Deep learning and LLM engineer",
+  "languages": [
+    "python"
+  ],
+  "candidate": {
+    "login": "ravi-ml-sample",
+    "name": "Ravi Chandran (sample persona)",
+    "profile_url": "https://example.com/gh/ravi-ml-sample"
+  },
+  "fit_score": 0.86,
+  "grounding_score": 1.0,
+  "grounding_fidelity": 0.6666666666666666,
+  "claims": [
+    {
+      "text": "Authors gradient-garden, a distributed LLM fine-tuning library",
+      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden"
+    },
+    {
+      "text": "Implements gradient checkpointing and sharded optimizer state",
+      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden/blob/main/README.md"
+    }
+  ],
+  "unverified": [
+    "Led the PyTorch distributed team at a major lab"
+  ],
+  "outreach_draft": "Hi Ravi — gradient-garden's take on sharded optimizer state is exactly the area we're hiring for. Open to comparing notes?",
+  "evidence": [
+    {
+      "kind": "github_repo",
+      "source_url": "https://example.com/gh/ravi-ml-sample/gradient-garden",
+      "text": "gradient-garden (Python, ★1503): a compact library for distributed LLM fine-tuning"
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/ravi-ml-sample/gradient-garden/blob/main/README.md",
+      "text": "# gradient-garden\nCompact utilities for data-parallel LLM fine-tuning with gradient checkpointing."
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/ravi-ml-sample/gradient-garden/blob/main/gg/trainer.py",
+      "text": "class Trainer:  # ZeRO-style sharded optimizer state\n    ..."
+    },
+    {
+      "kind": "web_page",
+      "source_url": "https://example.com/blog/ravi",
+      "text": "Sharding optimizer state: A walk through data-parallel fine-tuning and gradient checkpointing tradeoffs."
+    }
+  ],
+  "spans": [
+    {
+      "name": "discover",
+      "ms": 0.01,
+      "ok": true
+    },
+    {
+      "name": "research.files",
+      "ms": 0.02,
+      "ok": true
+    },
+    {
+      "name": "research",
+      "ms": 0.03,
+      "ok": true
+    },
+    {
+      "name": "synthesize",
+      "ms": 0.03,
+      "ok": true
+    }
+  ],
+  "model": "illustrative fixture (offline)",
+  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+}

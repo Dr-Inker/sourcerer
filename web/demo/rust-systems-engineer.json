@@ -1,0 +1,76 @@
+{
+  "role": "Rust systems engineer",
+  "languages": [
+    "rust"
+  ],
+  "candidate": {
+    "login": "tessa-embedded",
+    "name": "Tessa Ferro (sample persona)",
+    "profile_url": "https://example.com/gh/tessa-embedded"
+  },
+  "fit_score": 0.9,
+  "grounding_score": 1.0,
+  "grounding_fidelity": 1.0,
+  "claims": [
+    {
+      "text": "Authors tessellate, an embedded log-structured KV store in Rust",
+      "citation": "https://example.com/gh/tessa-embedded/tessellate"
+    },
+    {
+      "text": "Implemented a crash-safe write-ahead log and LSM compaction",
+      "citation": "https://example.com/gh/tessa-embedded/tessellate/blob/main/README.md"
+    },
+    {
+      "text": "Writes about WAL and compaction design for embedded databases",
+      "citation": "https://example.com/blog/tessa"
+    }
+  ],
+  "unverified": [],
+  "outreach_draft": "Hi Tessa — tessellate's crash-safe WAL and LSM compaction line up closely with what we're building. Would you be open to a short chat?",
+  "evidence": [
+    {
+      "kind": "github_repo",
+      "source_url": "https://example.com/gh/tessa-embedded/tessellate",
+      "text": "tessellate (Rust, ★812): an embedded, log-structured key-value store"
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/tessa-embedded/tessellate/blob/main/README.md",
+      "text": "# tessellate\nA small embedded log-structured KV store with crash-safe writes and a Rust-native API."
+    },
+    {
+      "kind": "github_file",
+      "source_url": "https://example.com/gh/tessa-embedded/tessellate/blob/main/src/engine.rs",
+      "text": "pub struct Engine { /* WAL + LSM compaction */ }"
+    },
+    {
+      "kind": "web_page",
+      "source_url": "https://example.com/blog/tessa",
+      "text": "Designing a crash-safe WAL: Notes on building a write-ahead log and compaction for an embedded Rust database."
+    }
+  ],
+  "spans": [
+    {
+      "name": "discover",
+      "ms": 0.01,
+      "ok": true
+    },
+    {
+      "name": "research.files",
+      "ms": 0.38,
+      "ok": true
+    },
+    {
+      "name": "research",
+      "ms": 0.4,
+      "ok": true
+    },
+    {
+      "name": "synthesize",
+      "ms": 0.06,
+      "ok": true
+    }
+  ],
+  "model": "illustrative fixture (offline)",
+  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+}
