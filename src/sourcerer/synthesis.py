@@ -1,6 +1,7 @@
 import json
 from sourcerer.models import Brief, Candidate, EvidenceBundle, Claim, Assessment
 from sourcerer.llm import LLMClient
+from sourcerer.evals.scorers import model_citation_fidelity
 
 
 def extract_json(raw: str) -> dict:
@@ -9,6 +10,14 @@ def extract_json(raw: str) -> dict:
     if a == -1 or b == -1 or b < a:
         raise ValueError("no JSON object in response")
     return json.loads(s[a:b + 1])
+
+
+def _coerce_score(value) -> float:
+    """Model-supplied fit_score → clamped float; fail closed to 0.0 on anything non-numeric."""
+    try:
+        return max(0.0, min(1.0, float(value)))
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _system(voice: str) -> str:
@@ -39,17 +48,33 @@ async def synthesize(candidate: Candidate, bundle: EvidenceBundle, llm: LLMClien
         f"{ev}\n"
         "--- END EVIDENCE ---"
     )
-    data = extract_json(await llm.complete(_system(voice), user, model))
+    raw = await llm.complete(_system(voice), user, model)
+    try:
+        data = extract_json(raw)
+    except (ValueError, json.JSONDecodeError):
+        # A malformed reply must not crash the batch: fail closed to an empty assessment.
+        return Assessment(candidate=candidate, fit_score=0.0, claims=[], unverified=[], outreach_draft="")
+    if not isinstance(data, dict):
+        return Assessment(candidate=candidate, fit_score=0.0, claims=[], unverified=[], outreach_draft="")
     valid_urls = bundle.source_urls()
+    raw_claims = data.get("claims", [])
     claims, unverified = [], list(data.get("unverified", []))
-    for c in data.get("claims", []):
+    for c in raw_claims:
+        if not isinstance(c, dict):
+            continue
         text = c.get("text", "")
-        if c.get("citation") in valid_urls:
+        if not isinstance(text, str):
+            continue  # non-string claim text is not a usable assertion
+        citation = c.get("citation")
+        # `citation in valid_urls` would raise on an unhashable (list/dict) citation, so require str.
+        if isinstance(citation, str) and citation in valid_urls:
             if text:
-                claims.append(Claim(text=text, citation=c["citation"]))
+                claims.append(Claim(text=text, citation=citation))
             # grounded but empty text -> skip (nothing to assert)
         else:
             unverified.append(text)   # empties are filtered out at the end
-    score = max(0.0, min(1.0, float(data.get("fit_score", 0.0))))
+    score = _coerce_score(data.get("fit_score", 0.0))
+    fidelity = model_citation_fidelity(raw_claims, valid_urls)
     return Assessment(candidate=candidate, fit_score=score, claims=claims,
-                      unverified=[u for u in unverified if u], outreach_draft=str(data.get("outreach_draft", "")).strip())
+                      unverified=[u for u in unverified if u], outreach_draft=str(data.get("outreach_draft", "")).strip(),
+                      grounding_fidelity=fidelity)

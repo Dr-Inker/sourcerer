@@ -28,6 +28,8 @@ ul{margin:.2em 0;padding-left:1.2em}
 .outreach{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;white-space:pre-wrap}
 .sources{margin:18px 0;color:var(--muted)}
 .sources .kind{color:var(--accent);font-size:.8rem;margin-right:6px}
+.sources a,.claims a.cite{overflow-wrap:anywhere;word-break:break-word}
+.fiction-note{margin:0 0 16px;padding:10px 14px;font-size:.85rem;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px}
 .stamp{margin-top:24px;font-size:.85rem}
 .topnav{margin-bottom:18px;font-size:.9rem}
 .topnav a{color:var(--muted)}

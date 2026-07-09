@@ -11,6 +11,16 @@ function esc(s) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+// Only ever emit http(s) hrefs. Defense-in-depth: even though demo URLs are pipeline-derived
+// GitHub/blog links, never let a javascript:/data: string from cached JSON become a live href.
+function safeUrl(u) {
+  try {
+    const parsed = new URL(String(u), location.href);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed.href : "#";
+  } catch {
+    return "#";
+  }
+}
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
 async function loadManifest() {
@@ -76,18 +86,19 @@ async function playStages(box, spans) {
 function renderResult(out, d) {
   const c = d.candidate || {};
   const claims = (d.claims || [])
-    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(cl.citation)}" target="_blank" rel="noopener noreferrer">source &#8599;</a></li>`)
+    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(safeUrl(cl.citation))}" target="_blank" rel="noopener noreferrer">source &#8599;</a></li>`)
     .join("");
   const unverified = (d.unverified || []).map((u) => `<li>${esc(u)}</li>`).join("");
   const sources = (d.evidence || [])
-    .map((e) => `<li><span class="kind">${esc(e.kind)}</span> <a href="${esc(e.source_url)}" target="_blank" rel="noopener noreferrer">${esc(e.source_url)}</a></li>`)
+    .map((e) => `<li><span class="kind">${esc(e.kind)}</span> <a href="${esc(safeUrl(e.source_url))}" target="_blank" rel="noopener noreferrer">${esc(e.source_url)}</a></li>`)
     .join("");
   out.innerHTML = `
     <div class="cand">
-      <h3>${esc(c.name || c.login)} <a href="${esc(c.profile_url)}" target="_blank" rel="noopener noreferrer">@${esc(c.login)} &#8599;</a></h3>
+      <h3>${esc(c.name || c.login)} <a href="${esc(safeUrl(c.profile_url))}" target="_blank" rel="noopener noreferrer">@${esc(c.login)} &#8599;</a></h3>
       <div class="scores">
         <span class="score">fit <b>${(d.fit_score ?? 0).toFixed(2)}</b></span>
         <span class="score grounded">grounding <b>${(d.grounding_score ?? 0).toFixed(2)}</b></span>
+        ${d.grounding_fidelity == null ? "" : `<span class="score fidelity" title="Fraction of the model's raw asserted claims whose citation was actually gathered — drops below 1.00 when the model fabricates a source.">model fidelity <b>${d.grounding_fidelity.toFixed(2)}</b></span>`}
       </div>
     </div>
     <h4>Grounded claims <span class="muted">(each cites real evidence)</span></h4>
