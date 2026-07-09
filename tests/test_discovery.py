@@ -19,6 +19,6 @@ async def test_discover_maps_users_to_candidates():
 
 async def test_discover_degrades_to_empty_when_search_rate_limited():
     # A 403 on the search call should yield no candidates, not a traceback.
-    gh = HttpGitHub(token=None, transport=httpx.MockTransport(lambda req: httpx.Response(403, request=req)))
-    cands = await discover(Brief(role="x", languages=["rust"], max_candidates=1), gh)
+    async with HttpGitHub(token=None, transport=httpx.MockTransport(lambda req: httpx.Response(403, request=req))) as gh:
+        cands = await discover(Brief(role="x", languages=["rust"], max_candidates=1), gh)
     assert cands == []

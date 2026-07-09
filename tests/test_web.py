@@ -14,6 +14,18 @@ def _allow_robots(request):
     return httpx.Response(200, text="", request=request) if request.url.path == "/robots.txt" else None
 
 
+async def test_http_fetcher_context_manager_closes_client():
+    # Shared client created lazily on first fetch, closed on context exit.
+    def handler(request):
+        return httpx.Response(200, text="<body>ok</body>", request=request)
+    f = HttpFetcher(transport=httpx.MockTransport(handler))
+    assert f._client is None
+    async with f:
+        await f.fetch("http://93.184.216.34/x")
+        assert f._client is not None
+    assert f._client is None
+
+
 async def test_fetch_pins_validated_ip_not_a_reresolved_name(monkeypatch):
     # Resolve example.com -> a public IP, then prove the actual connection targets THAT IP
     # (with Host + SNI kept on the hostname) — i.e. no second, rebindable DNS lookup at connect.

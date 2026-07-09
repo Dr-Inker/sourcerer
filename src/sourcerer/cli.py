@@ -10,8 +10,10 @@ from sourcerer.evals.scorers import grounding_score
 
 async def _amain(brief: Brief) -> None:
     s = get_settings()
-    gh, fetcher, llm = HttpGitHub(s.github_token), HttpFetcher(), LiteLLMClient()
-    for assessment, bundle in await run(brief, gh, fetcher, llm, s.model):
+    llm = LiteLLMClient()
+    async with HttpGitHub(s.github_token) as gh, HttpFetcher() as fetcher:
+        results = await run(brief, gh, fetcher, llm, s.model)
+    for assessment, bundle in results:
         fid = assessment.grounding_fidelity
         fid_str = f", model-fidelity {fid:.2f}" if fid is not None else ""
         print(f"\n=== {assessment.candidate.name or assessment.candidate.login}  (fit {assessment.fit_score:.2f}, grounding {grounding_score(assessment, bundle):.2f}{fid_str}) ===")

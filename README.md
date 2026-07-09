@@ -32,7 +32,7 @@ Each stage is wrapped in a trace span (`discover` / `research` / `synthesize`), 
 ## Design
 
 - **Every I/O dependency sits behind a `typing.Protocol` with a deterministic mock** (`GitHubClient`, `Fetcher`, `LLMClient`). The entire pipeline is unit-tested with **no network calls** — the real HTTP/LLM implementations and their mocks are interchangeable.
-- **Fully async** (`async def`, `httpx.AsyncClient`).
+- **Fully async** (`async def`, `httpx.AsyncClient`). Each client holds one shared, connection-pooled `AsyncClient` (async-context-managed), and the GitHub search → profile fan-out runs concurrently via `asyncio.gather`.
 - **Public sources only.** GitHub via its REST API; web fetches respect `robots.txt`, apply timeouts, and are guarded against SSRF: every resolved address must be globally routable (loopback/private/link-local/CGNAT/NAT64/metadata are refused), the validated IP is **pinned** to the connection (closing the DNS-rebinding gap between check and connect), and each redirect hop is re-validated and re-pinned. No LinkedIn, no ToS-violating scraping.
 - **Secrets from the environment** via `python-dotenv`; never hardcoded.
 

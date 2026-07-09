@@ -87,21 +87,46 @@ class HttpFetcher:
     def __init__(self, transport: httpx.AsyncBaseTransport | None = None):
         # transport is an injection seam for tests (httpx.MockTransport); None = real network.
         self._transport = transport
+        # One shared client per instance so robots + the page (+ redirect hops) reuse connections.
+        self._client: httpx.AsyncClient | None = None
+
+    def _c(self) -> httpx.AsyncClient:
+        if self._client is None:
+            # follow_redirects defaults False — we drive redirects manually to re-validate each hop.
+            # max_keepalive_connections=0: don't pool connections across fetches. Because we connect
+            # to a pinned IP, a keep-alive connection is keyed by IP, so two different blog hostnames
+            # resolving to the same IP could otherwise reuse a tunnel whose cert was validated for the
+            # other host's SNI. The fetcher makes few requests, so losing pooling costs ~nothing.
+            self._client = httpx.AsyncClient(transport=self._transport,
+                                             limits=httpx.Limits(max_keepalive_connections=0))
+        return self._client
+
+    async def aclose(self) -> None:
+        if self._client is not None:
+            await self._client.aclose()
+            self._client = None
+
+    async def __aenter__(self) -> "HttpFetcher":
+        return self
+
+    async def __aexit__(self, *exc) -> None:
+        await self.aclose()
 
     async def _resolve_is_public(self, url: str) -> bool:
         return await self._resolve_validated(url) is not None
 
-    async def _pinned_get(self, client: httpx.AsyncClient, url: str, ip: str) -> httpx.Response:
+    async def _pinned_get(self, url: str, ip: str, timeout: float) -> httpx.Response:
         """GET `url` but connect to the pre-validated `ip`, keeping Host + TLS SNI on the real
         host. Pinning the checked IP to the socket is what closes the DNS-rebinding TOCTOU."""
         u = httpx.URL(url)
         bracketed = f"[{u.host}]" if ":" in u.host else u.host   # RFC 7230 IPv6 literal
         host_header = bracketed + (f":{u.port}" if u.port is not None else "")
         extensions = {"sni_hostname": u.host} if u.scheme == "https" else {}
-        return await client.get(
+        return await self._c().get(
             u.copy_with(host=ip),
             headers={"User-Agent": "sourcerer/0.1", "Host": host_header},
             extensions=extensions,
+            timeout=timeout,
         )
 
     async def _allowed(self, url: str, ip: str) -> bool:
@@ -110,8 +135,7 @@ class HttpFetcher:
         rp = RobotFileParser()
         rp.set_url(robots_url)
         try:
-            async with httpx.AsyncClient(timeout=10, transport=self._transport) as c:
-                r = await self._pinned_get(c, robots_url, ip)
+            r = await self._pinned_get(robots_url, ip, timeout=10)
         except httpx.HTTPError:
             return True  # robots unreachable (timeout/conn error) → allowed
         if r.status_code >= 500:
@@ -127,23 +151,22 @@ class HttpFetcher:
         if not await self._allowed(url, pinned):
             return None
         try:
-            async with httpx.AsyncClient(timeout=15, transport=self._transport) as c:  # follow_redirects defaults False
-                current, current_ip = url, pinned
-                for _ in range(5):
-                    r = await self._pinned_get(c, current, current_ip)
-                    if r.is_redirect:
-                        loc = r.headers.get("location")
-                        if not loc:
-                            return None
-                        current = str(httpx.URL(current).join(loc))
-                        current_ip = await self._resolve_validated(current)  # re-validate + re-pin each hop
-                        if current_ip is None:
-                            return None
-                        continue
-                    r.raise_for_status()
-                    break
-                else:
-                    return None  # too many redirects
+            current, current_ip = url, pinned
+            for _ in range(5):
+                r = await self._pinned_get(current, current_ip, timeout=15)
+                if r.is_redirect:
+                    loc = r.headers.get("location")
+                    if not loc:
+                        return None
+                    current = str(httpx.URL(current).join(loc))
+                    current_ip = await self._resolve_validated(current)  # re-validate + re-pin each hop
+                    if current_ip is None:
+                        return None
+                    continue
+                r.raise_for_status()
+                break
+            else:
+                return None  # too many redirects
         except httpx.HTTPError:
             return None
         title, text = extract_text(r.text)
