@@ -1,4 +1,6 @@
-from sourcerer.github import MockGitHub
+import httpx
+
+from sourcerer.github import MockGitHub, HttpGitHub
 
 
 async def test_mock_search_and_repos():
@@ -23,3 +25,17 @@ async def test_mock_list_paths_and_get_file():
     assert await gh.get_file("rustdev", "fastdb", "missing.txt") is None
     # unknown repo -> empty tree, not an error
     assert await gh.list_paths("rustdev", "nope", "main") == []
+
+
+async def test_http_search_users_skips_a_failing_profile_fetch():
+    # The search->profile fan-out must not abort the whole search when one profile 403s.
+    def handler(request):
+        p = request.url.path
+        if p == "/search/users":
+            return httpx.Response(200, json={"items": [{"login": "good"}, {"login": "bad"}]}, request=request)
+        if p == "/users/good":
+            return httpx.Response(200, json={"login": "good", "html_url": "https://github.com/good"}, request=request)
+        return httpx.Response(403, request=request)  # /users/bad rate-limited
+    gh = HttpGitHub(token=None, transport=httpx.MockTransport(handler))
+    users = await gh.search_users("q", 5)
+    assert [u["login"] for u in users] == ["good"]

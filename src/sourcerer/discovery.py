@@ -1,3 +1,7 @@
+import sys
+
+import httpx
+
 from sourcerer.models import Brief, Candidate
 from sourcerer.github import GitHubClient
 
@@ -10,7 +14,12 @@ def build_query(brief: Brief) -> str:
 
 
 async def discover(brief: Brief, gh: GitHubClient) -> list[Candidate]:
-    users = await gh.search_users(build_query(brief), brief.max_candidates)
+    try:
+        users = await gh.search_users(build_query(brief), brief.max_candidates)
+    except httpx.HTTPError as e:
+        # Search failing (rate-limit, network) yields no candidates rather than a traceback.
+        print(f"warning: candidate search failed: {e!r}", file=sys.stderr)
+        return []
     out: list[Candidate] = []
     for u in users:
         out.append(Candidate(

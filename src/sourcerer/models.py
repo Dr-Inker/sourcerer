@@ -43,3 +43,6 @@ class Assessment(BaseModel):
     claims: list[Claim] = Field(default_factory=list)
     unverified: list[str] = Field(default_factory=list)
     outreach_draft: str
+    # Fraction of the model's raw asserted claims whose citation was actually gathered.
+    # Drops below 1.0 when the model fabricates a citation (see evals.model_citation_fidelity).
+    grounding_fidelity: float | None = None

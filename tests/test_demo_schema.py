@@ -42,6 +42,13 @@ def test_to_demo_run_captures_grounding_and_replay_fields():
     assert run.generated_at == "2026-06-27T12:00:00Z"
 
 
+def test_to_demo_run_carries_grounding_fidelity():
+    brief, assessment, bundle, spans = _fixture()
+    assessment.grounding_fidelity = 0.5
+    run = to_demo_run(brief, assessment, bundle, spans, model="m", generated_at="t")
+    assert run.grounding_fidelity == 0.5
+
+
 def test_demo_run_json_round_trips():
     brief, assessment, bundle, spans = _fixture()
     run = to_demo_run(brief, assessment, bundle, spans, model="m", generated_at="t")

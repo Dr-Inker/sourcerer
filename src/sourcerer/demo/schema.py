@@ -32,6 +32,7 @@ class DemoRun(BaseModel):
     candidate: DemoCandidate
     fit_score: float
     grounding_score: float
+    grounding_fidelity: float | None = None
     claims: list[DemoClaim]
     unverified: list[str]
     outreach_draft: str
@@ -65,6 +66,7 @@ def to_demo_run(brief: Brief, assessment: Assessment, bundle: EvidenceBundle,
         ),
         fit_score=assessment.fit_score,
         grounding_score=grounding_score(assessment, bundle),
+        grounding_fidelity=assessment.grounding_fidelity,
         claims=_dedupe_claims(assessment.claims),
         unverified=list(assessment.unverified),
         outreach_draft=assessment.outreach_draft,

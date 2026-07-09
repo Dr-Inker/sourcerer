@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sourcerer — grounded technical sourcing</title>
-  <meta name="description" content="AI technical-sourcing agent: discovers an engineer, then writes a grounded, cited fit-brief — fail-closed, no hallucinated claims. Grounding 1.00 on the live demos.">
+  <meta name="description" content="AI technical-sourcing agent: discovers an engineer, then writes a grounded, cited fit-brief — fail-closed, no hallucinated claims. Explore cached sample runs.">
   <link rel="canonical" href="https://drinkerlabs.info/sourcerer/">
   <link rel="icon" type="image/png" href="/sourcerer/favicon.png">
   <link rel="apple-touch-icon" href="/sourcerer/apple-touch-icon.png">
@@ -28,21 +28,21 @@
         must point at real evidence, or it doesn't get made.</p>
     </header>
     <section class="how">
-      <p>Pick a role. Watch it run <code>discover &rarr; research &rarr; synthesize</code>, then read
+      <p>Pick a role to replay a <strong>cached sample run</strong> <code>discover &rarr; research &rarr; synthesize</code>, then read
         the brief — with the <strong>grounding score</strong>, clickable citations, and the
         <strong>&ldquo;unverified&rdquo; list</strong> of things it refused to assert.
         <a href="https://github.com/Dr-Inker/sourcerer" target="_blank" rel="noopener noreferrer">Source on GitHub &#8599;</a></p>
     </section>
     <nav id="presets" class="presets"></nav>
-    <section id="stages" class="stages"></section>
-    <section id="result" class="result"></section>
+    <section id="stages" class="stages" aria-live="polite" aria-label="Pipeline stages"></section>
+    <section id="result" class="result" aria-live="polite" aria-label="Candidate brief"></section>
     <section class="built">
       <h2>How it&rsquo;s built</h2>
       <ul>
         <li><strong>Grounded, fail-closed.</strong> Every claim must cite a real evidence URL; anything the model can&rsquo;t ground is demoted to the &ldquo;unverified&rdquo; list <em>in code</em> — not left to prompt discipline.</li>
         <li><strong>Clean async pipeline.</strong> <code>discover &rarr; research &rarr; synthesize</code>, with every external dependency (GitHub, web, LLM) behind a <code>typing.Protocol</code> and a deterministic mock — so the whole pipeline is unit-tested with zero network.</li>
         <li><strong>Safe by construction.</strong> Robots-aware, SSRF-guarded fetch (loopback / private / cloud-metadata blocked); public sources only; secrets from the environment.</li>
-        <li><strong>Tested &amp; shipped.</strong> 30 network-free tests + CI, built test-first; GLM-5.1 via LiteLLM (swap the model with one env var).</li>
+        <li><strong>Tested &amp; shipped.</strong> A network-free test suite + CI, built test-first; GLM-5.1 via LiteLLM (swap the model with one env var).</li>
       </ul>
       <p class="muted">A portfolio project by <a href="https://drinkerlabs.info/">drinkerlabs.info</a> &middot; <a href="https://github.com/Dr-Inker/sourcerer" target="_blank" rel="noopener noreferrer">source &amp; design docs &#8599;</a></p>
     </section>
