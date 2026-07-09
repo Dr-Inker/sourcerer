@@ -110,7 +110,7 @@ The suite covers each module plus an end-to-end pipeline test (all mocks), inclu
 
 ## Roadmap
 
-Phase 1 is the spine; **Phase 2, Increment 1 — the public [live demo](https://drinkerlabs.info/sourcerer/)** (curated preset roles replaying real grounded runs, pure-static, no secrets on the public path) — is shipped. Still deliberately deferred to later phases (each gets its own plan):
+Phase 1 is the spine; **Phase 2, Increment 1 — the public [live demo](https://drinkerlabs.info/sourcerer/)** (curated preset roles replaying grounded runs over fictional `example.com` personas, pure-static, no secrets and no real-person data on the public path) — is shipped. Still deliberately deferred to later phases (each gets its own plan):
 
 - LangGraph orchestration + parallel research fan-out
 - Agentic browser (Browser Use / Stagehand) for the open-web long tail
