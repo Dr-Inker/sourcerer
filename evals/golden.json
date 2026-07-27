@@ -1,1 +1,38 @@
-[{"brief": {"role": "Rust systems engineer", "languages": ["rust"]}, "expected_login": "rustdev"}]
+[
+  {
+    "brief": {"role": "Rust systems engineer", "languages": ["rust"], "must_have": ["distributed databases"], "max_candidates": 3},
+    "expected_login": "rust-systems",
+    "users": [
+      {"login": "popular-ui", "html_url": "https://github.com/popular-ui", "bio": "JavaScript frontend engineer", "followers": 9000},
+      {"login": "rust-systems", "html_url": "https://github.com/rust-systems", "bio": "Rust systems engineer building distributed databases", "followers": 20},
+      {"login": "rust-games", "html_url": "https://github.com/rust-games", "bio": "Rust game developer", "followers": 500}
+    ]
+  },
+  {
+    "brief": {"role": "Machine learning infrastructure engineer", "languages": ["python"], "topics": ["LLM training"], "max_candidates": 3},
+    "expected_login": "ml-infra",
+    "users": [
+      {"login": "data-analyst", "html_url": "https://github.com/data-analyst", "bio": "Python analytics and dashboards", "followers": 4000},
+      {"login": "ml-infra", "html_url": "https://github.com/ml-infra", "bio": "machine learning infrastructure engineer for distributed LLM training", "followers": 12},
+      {"login": "ml-apps", "html_url": "https://github.com/ml-apps", "bio": "machine learning application developer", "followers": 800}
+    ]
+  },
+  {
+    "brief": {"role": "Go cloud native engineer", "languages": ["go"], "must_have": ["Kubernetes control planes"], "max_candidates": 3},
+    "expected_login": "go-control-plane",
+    "users": [
+      {"login": "go-control-plane", "html_url": "https://github.com/go-control-plane", "bio": "Go cloud native engineer building Kubernetes control planes", "followers": 3},
+      {"login": "go-cli", "html_url": "https://github.com/go-cli", "bio": "Go command line tools", "followers": 3000},
+      {"login": "ops", "html_url": "https://github.com/ops", "bio": "Kubernetes operator", "followers": 500}
+    ]
+  },
+  {
+    "brief": {"role": "TypeScript developer tooling engineer", "languages": ["typescript"], "topics": ["compilers"], "max_candidates": 3},
+    "expected_login": "ts-tooling",
+    "users": [
+      {"login": "js-famous", "html_url": "https://github.com/js-famous", "bio": "JavaScript framework author", "followers": 50000},
+      {"login": "ts-tooling", "html_url": "https://github.com/ts-tooling", "bio": "TypeScript developer tooling engineer working on compilers", "followers": 7},
+      {"login": "compiler-rust", "html_url": "https://github.com/compiler-rust", "bio": "Rust compiler engineer", "followers": 700}
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 import asyncio
 
-from sourcerer.trace import traced, get_spans, reset_spans, span_scope
+from sourcerer.trace import get_spans, reset_spans, span_scope, traced
 
 
 async def test_span_recorded_with_name_and_ok():

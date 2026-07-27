@@ -1,6 +1,11 @@
-from sourcerer.evals.scorers import grounding_score, claims_resolve, model_citation_fidelity
-from sourcerer.models import Candidate, Evidence, EvidenceBundle, Claim, Assessment
-
+from sourcerer.evals.scorers import (
+    claims_resolve,
+    grounding_score,
+    model_citation_fidelity,
+    quote_support_score,
+    reciprocal_rank,
+)
+from sourcerer.models import Assessment, Candidate, Claim, Evidence, EvidenceBundle
 
 VALID = {"https://github.com/x/r", "https://github.com/x/r/blob/main/a.py"}
 
@@ -51,3 +56,18 @@ def test_ungrounded_claim_lowers_score():
     c, b = _bundle()
     a = Assessment(candidate=c, fit_score=0.5, claims=[Claim(text="t", citation="https://evil.test")], unverified=[], outreach_draft="")
     assert grounding_score(a, b) == 0.0 and claims_resolve(a, b) is False
+
+
+def test_empty_assessment_does_not_receive_perfect_grounding_score():
+    c, b = _bundle()
+    a = Assessment(candidate=c, fit_score=0.0, claims=[], outreach_draft="")
+    assert grounding_score(a, b) == 0.0
+
+
+def test_quote_support_and_reciprocal_rank_are_non_vacuous():
+    c, b = _bundle()
+    a = Assessment(candidate=c, fit_score=0.5, claims=[Claim(
+        text="t", citation="https://github.com/x/r", supporting_quote="t")], outreach_draft="")
+    assert quote_support_score(a, b) == 1.0
+    assert reciprocal_rank(["a", "x"], "x") == 0.5
+    assert reciprocal_rank([], "x") == 0.0

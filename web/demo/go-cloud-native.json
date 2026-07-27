@@ -10,28 +10,37 @@
   },
   "fit_score": 0.88,
   "grounding_score": 1.0,
+  "quote_support_score": 1.0,
   "grounding_fidelity": 1.0,
   "claims": [
     {
-      "text": "Authors flock, a service-mesh control plane in Go",
-      "citation": "https://example.com/gh/mara-cloud/flock"
+      "text": "The flock repository describes a lightweight service mesh control plane",
+      "citation": "https://example.com/gh/mara-cloud/flock",
+      "supporting_quote": "a lightweight service mesh control plane"
     },
     {
-      "text": "Built a streaming xDS discovery server for Envoy sidecars",
-      "citation": "https://example.com/gh/mara-cloud/flock/blob/main/README.md"
+      "text": "Its README documents an xDS-speaking control plane for Envoy sidecars",
+      "citation": "https://example.com/gh/mara-cloud/flock/blob/main/README.md",
+      "supporting_quote": "control plane speaking xDS to Envoy sidecars"
     },
     {
-      "text": "Writes about reconciling sidecar state via xDS",
-      "citation": "https://example.com/blog/mara"
+      "text": "The linked blog discusses reconciling sidecar state",
+      "citation": "https://example.com/blog/mara",
+      "supporting_quote": "reconciling sidecar state"
     }
   ],
   "unverified": [],
-  "outreach_draft": "Hi Mara — flock's xDS control plane is right in our wheelhouse. Would you be up for a conversation?",
+  "outreach_draft": "Hi Mara Ilic (sample persona) — I came across your public work and was interested to see that The flock repository describes a lightweight service mesh control plane. Would you be open to a brief conversation about a potentially relevant role?",
   "evidence": [
+    {
+      "kind": "github_profile",
+      "source_url": "https://example.com/gh/mara-cloud",
+      "text": "GitHub profile for mara-cloud. bio: service meshes & control planes in Go followers: 640"
+    },
     {
       "kind": "github_repo",
       "source_url": "https://example.com/gh/mara-cloud/flock",
-      "text": "flock (Go, ★640): a lightweight service mesh control plane"
+      "text": "flock (Go, ★640; ownership not independently verified; repository appears on the user's repo list): a lightweight service mesh control plane"
     },
     {
       "kind": "github_file",
@@ -52,25 +61,25 @@
   "spans": [
     {
       "name": "discover",
-      "ms": 0.0,
+      "ms": 0.03,
       "ok": true
     },
     {
       "name": "research.files",
-      "ms": 0.02,
+      "ms": 0.03,
       "ok": true
     },
     {
       "name": "research",
-      "ms": 0.03,
+      "ms": 0.06,
       "ok": true
     },
     {
       "name": "synthesize",
-      "ms": 0.03,
+      "ms": 0.05,
       "ok": true
     }
   ],
   "model": "illustrative fixture (offline)",
-  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+  "generated_at": "2026-07-27T21:07:38.984277+00:00"
 }

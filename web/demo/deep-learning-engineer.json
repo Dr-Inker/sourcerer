@@ -10,26 +10,34 @@
   },
   "fit_score": 0.86,
   "grounding_score": 1.0,
+  "quote_support_score": 1.0,
   "grounding_fidelity": 0.6666666666666666,
   "claims": [
     {
-      "text": "Authors gradient-garden, a distributed LLM fine-tuning library",
-      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden"
+      "text": "The gradient-garden repository describes distributed LLM fine-tuning",
+      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden",
+      "supporting_quote": "a compact library for distributed LLM fine-tuning"
     },
     {
-      "text": "Implements gradient checkpointing and sharded optimizer state",
-      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden/blob/main/README.md"
+      "text": "Its README documents data-parallel fine-tuning with gradient checkpointing",
+      "citation": "https://example.com/gh/ravi-ml-sample/gradient-garden/blob/main/README.md",
+      "supporting_quote": "data-parallel LLM fine-tuning with gradient checkpointing"
     }
   ],
   "unverified": [
     "Led the PyTorch distributed team at a major lab"
   ],
-  "outreach_draft": "Hi Ravi — gradient-garden's take on sharded optimizer state is exactly the area we're hiring for. Open to comparing notes?",
+  "outreach_draft": "Hi Ravi Chandran (sample persona) — I came across your public work and was interested to see that The gradient-garden repository describes distributed LLM fine-tuning. Would you be open to a brief conversation about a potentially relevant role?",
   "evidence": [
+    {
+      "kind": "github_profile",
+      "source_url": "https://example.com/gh/ravi-ml-sample",
+      "text": "GitHub profile for ravi-ml-sample. bio: training infra for language models followers: 1503"
+    },
     {
       "kind": "github_repo",
       "source_url": "https://example.com/gh/ravi-ml-sample/gradient-garden",
-      "text": "gradient-garden (Python, ★1503): a compact library for distributed LLM fine-tuning"
+      "text": "gradient-garden (Python, ★1503; ownership not independently verified; repository appears on the user's repo list): a compact library for distributed LLM fine-tuning"
     },
     {
       "kind": "github_file",
@@ -50,25 +58,25 @@
   "spans": [
     {
       "name": "discover",
-      "ms": 0.01,
+      "ms": 0.05,
       "ok": true
     },
     {
       "name": "research.files",
-      "ms": 0.02,
+      "ms": 0.04,
       "ok": true
     },
     {
       "name": "research",
-      "ms": 0.03,
+      "ms": 0.08,
       "ok": true
     },
     {
       "name": "synthesize",
-      "ms": 0.03,
+      "ms": 0.06,
       "ok": true
     }
   ],
   "model": "illustrative fixture (offline)",
-  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+  "generated_at": "2026-07-27T21:07:38.984277+00:00"
 }

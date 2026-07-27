@@ -10,28 +10,37 @@
   },
   "fit_score": 0.9,
   "grounding_score": 1.0,
+  "quote_support_score": 1.0,
   "grounding_fidelity": 1.0,
   "claims": [
     {
-      "text": "Authors tessellate, an embedded log-structured KV store in Rust",
-      "citation": "https://example.com/gh/tessa-embedded/tessellate"
+      "text": "The tessellate repository describes an embedded, log-structured key-value store",
+      "citation": "https://example.com/gh/tessa-embedded/tessellate",
+      "supporting_quote": "an embedded, log-structured key-value store"
     },
     {
-      "text": "Implemented a crash-safe write-ahead log and LSM compaction",
-      "citation": "https://example.com/gh/tessa-embedded/tessellate/blob/main/README.md"
+      "text": "Its README documents crash-safe writes and a Rust-native API",
+      "citation": "https://example.com/gh/tessa-embedded/tessellate/blob/main/README.md",
+      "supporting_quote": "crash-safe writes and a Rust-native API"
     },
     {
-      "text": "Writes about WAL and compaction design for embedded databases",
-      "citation": "https://example.com/blog/tessa"
+      "text": "The linked blog discusses WAL and compaction for an embedded Rust database",
+      "citation": "https://example.com/blog/tessa",
+      "supporting_quote": "a write-ahead log and compaction for an embedded Rust database"
     }
   ],
   "unverified": [],
-  "outreach_draft": "Hi Tessa — tessellate's crash-safe WAL and LSM compaction line up closely with what we're building. Would you be open to a short chat?",
+  "outreach_draft": "Hi Tessa Ferro (sample persona) — I came across your public work and was interested to see that The tessellate repository describes an embedded, log-structured key-value store. Would you be open to a brief conversation about a potentially relevant role?",
   "evidence": [
+    {
+      "kind": "github_profile",
+      "source_url": "https://example.com/gh/tessa-embedded",
+      "text": "GitHub profile for tessa-embedded. bio: embedded & storage engines in Rust followers: 812"
+    },
     {
       "kind": "github_repo",
       "source_url": "https://example.com/gh/tessa-embedded/tessellate",
-      "text": "tessellate (Rust, ★812): an embedded, log-structured key-value store"
+      "text": "tessellate (Rust, ★812; ownership not independently verified; repository appears on the user's repo list): an embedded, log-structured key-value store"
     },
     {
       "kind": "github_file",
@@ -52,25 +61,25 @@
   "spans": [
     {
       "name": "discover",
-      "ms": 0.01,
+      "ms": 0.25,
       "ok": true
     },
     {
       "name": "research.files",
-      "ms": 0.38,
+      "ms": 0.43,
       "ok": true
     },
     {
       "name": "research",
-      "ms": 0.4,
+      "ms": 0.51,
       "ok": true
     },
     {
       "name": "synthesize",
-      "ms": 0.06,
+      "ms": 0.12,
       "ok": true
     }
   ],
   "model": "illustrative fixture (offline)",
-  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+  "generated_at": "2026-07-27T21:07:38.984277+00:00"
 }

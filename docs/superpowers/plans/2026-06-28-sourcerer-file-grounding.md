@@ -1,5 +1,7 @@
 # Sourcerer File-Path + Key-Content Grounding — Implementation Plan
 
+> Historical implementation plan. Exact supporting excerpts are now required in addition to gathered URLs. See [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ingest each candidate repo's file paths plus README/notable file contents (capped) as `Evidence`, so assessments ground in real code and the fail-closed citation-membership check gains file-level teeth.

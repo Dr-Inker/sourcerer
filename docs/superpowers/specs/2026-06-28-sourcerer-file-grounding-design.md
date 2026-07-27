@@ -1,5 +1,7 @@
 # Sourcerer — file-path + key-content grounding
 
+> Historical design record. Exact supporting excerpts are now required in addition to gathered URLs. See [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 **Date:** 2026-06-28
 **Status:** Approved (design), pending implementation plan
 **Author:** dr.inker (with Claude)

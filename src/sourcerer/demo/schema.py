@@ -1,11 +1,13 @@
 from pydantic import BaseModel
-from sourcerer.models import Brief, Assessment, EvidenceBundle
-from sourcerer.evals.scorers import grounding_score
+
+from sourcerer.evals.scorers import grounding_score, quote_support_score
+from sourcerer.models import Assessment, Brief, EvidenceBundle
 
 
 class DemoClaim(BaseModel):
     text: str
     citation: str
+    supporting_quote: str | None = None
 
 
 class DemoEvidence(BaseModel):
@@ -32,6 +34,7 @@ class DemoRun(BaseModel):
     candidate: DemoCandidate
     fit_score: float
     grounding_score: float
+    quote_support_score: float = 0.0
     grounding_fidelity: float | None = None
     claims: list[DemoClaim]
     unverified: list[str]
@@ -50,7 +53,8 @@ def _dedupe_claims(claims: list) -> list[DemoClaim]:
         if c.text in seen:
             continue
         seen.add(c.text)
-        out.append(DemoClaim(text=c.text, citation=c.citation))
+        out.append(DemoClaim(text=c.text, citation=c.citation,
+                             supporting_quote=c.supporting_quote))
     return out
 
 
@@ -66,6 +70,7 @@ def to_demo_run(brief: Brief, assessment: Assessment, bundle: EvidenceBundle,
         ),
         fit_score=assessment.fit_score,
         grounding_score=grounding_score(assessment, bundle),
+        quote_support_score=quote_support_score(assessment, bundle),
         grounding_fidelity=assessment.grounding_fidelity,
         claims=_dedupe_claims(assessment.claims),
         unverified=list(assessment.unverified),

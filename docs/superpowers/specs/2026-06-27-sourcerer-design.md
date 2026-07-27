@@ -1,5 +1,7 @@
 # Sourcerer — design spec
 
+> Historical design record. For shipped behavior and current limitations, see [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 > **Working name: "sourcerer"** (technical-sourcing agent; easily changed).
 > An AI technical-sourcing agent: give it a role/ICP → it discovers engineering candidates from
 > public signals, fans out parallel browser sub-agents to research each across the open web, writes a

@@ -9,3 +9,8 @@ def test_defaults_to_known_model(monkeypatch):
 def test_reads_model_from_env(monkeypatch):
     monkeypatch.setenv("SOURCERER_MODEL", "gemini-2.5-flash")
     assert get_settings().model == "gemini-2.5-flash"
+
+
+def test_empty_model_uses_default(monkeypatch):
+    monkeypatch.setenv("SOURCERER_MODEL", "")
+    assert get_settings().model == "openrouter/z-ai/glm-5.1"

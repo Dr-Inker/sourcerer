@@ -12,11 +12,16 @@ use the CLI.
 
 ## Regenerate the cached runs (offline, no keys)
 Generation runs the real pipeline over deterministic mock clients seeded with the
-fictional personas, so it needs no network and no API keys:
+fictional personas, so it needs no network and no API keys. Each surviving claim
+contains a gathered citation plus an exact supporting excerpt; outreach is rebuilt
+from those surviving claims rather than trusting fixture-authored prose:
 
     /opt/sourcerer/.venv/bin/python -m sourcerer.demo.generate
 
 The persona fixtures live in `sourcerer/demo/generate.py`.
+
+The generated artifacts expose both `grounding_score` (citation resolution) and
+`quote_support_score` (exact excerpt support). An empty assessment scores zero.
 
 ## Publish to the live site
 Publishes the committed `demo/*.json` (pass `generate` to regenerate first):

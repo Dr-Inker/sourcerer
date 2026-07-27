@@ -1,13 +1,12 @@
 import asyncio
 import ipaddress
 from typing import Protocol
-from urllib.robotparser import RobotFileParser
 from urllib.parse import urlparse
+from urllib.robotparser import RobotFileParser
 
 import httpx
-from selectolax.parser import HTMLParser
 from pydantic import BaseModel
-
+from selectolax.parser import HTMLParser
 
 MAX_ROBOTS_BYTES = 64 * 1024
 

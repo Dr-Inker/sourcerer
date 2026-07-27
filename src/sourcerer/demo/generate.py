@@ -2,14 +2,14 @@ import asyncio
 import json
 from pathlib import Path
 
-from sourcerer.models import Brief
-from sourcerer.github import MockGitHub, GitHubClient
-from sourcerer.web import MockFetcher, PageContent, Fetcher
-from sourcerer.llm import MockLLM, LLMClient
-from sourcerer.pipeline import run
-from sourcerer.trace import reset_spans, get_spans, span_scope
 from sourcerer import ingest
 from sourcerer.demo.schema import DemoRun, to_demo_run
+from sourcerer.github import GitHubClient, MockGitHub
+from sourcerer.llm import LLMClient, MockLLM
+from sourcerer.models import Brief
+from sourcerer.pipeline import run
+from sourcerer.trace import get_spans, reset_spans, span_scope
+from sourcerer.web import Fetcher, MockFetcher, PageContent
 
 # The PUBLIC demo depicts FICTIONAL personas only — every URL is on the RFC 2606 example.com
 # placeholder domain, so no real person or repository is researched, scored, or shown. The real
@@ -38,9 +38,12 @@ PRESETS: list[dict] = [
             "fit_score": 0.9,
             "outreach": "Hi Tessa — tessellate's crash-safe WAL and LSM compaction line up closely with what we're building. Would you be open to a short chat?",
             "claims": [
-                {"text": "Authors tessellate, an embedded log-structured KV store in Rust", "cite": "repo"},
-                {"text": "Implemented a crash-safe write-ahead log and LSM compaction", "cite": "readme"},
-                {"text": "Writes about WAL and compaction design for embedded databases", "cite": "blog"},
+                {"text": "The tessellate repository describes an embedded, log-structured key-value store", "cite": "repo",
+                 "quote": "an embedded, log-structured key-value store"},
+                {"text": "Its README documents crash-safe writes and a Rust-native API", "cite": "readme",
+                 "quote": "crash-safe writes and a Rust-native API"},
+                {"text": "The linked blog discusses WAL and compaction for an embedded Rust database", "cite": "blog",
+                 "quote": "a write-ahead log and compaction for an embedded Rust database"},
             ],
         },
     },
@@ -65,9 +68,12 @@ PRESETS: list[dict] = [
             # This persona demonstrates the guard: the last claim cites a file that was never
             # gathered (a fabricated source), so it is demoted to 'unverified' and fidelity drops.
             "claims": [
-                {"text": "Authors gradient-garden, a distributed LLM fine-tuning library", "cite": "repo"},
-                {"text": "Implements gradient checkpointing and sharded optimizer state", "cite": "readme"},
-                {"text": "Led the PyTorch distributed team at a major lab", "cite": "fabricated"},
+                {"text": "The gradient-garden repository describes distributed LLM fine-tuning", "cite": "repo",
+                 "quote": "a compact library for distributed LLM fine-tuning"},
+                {"text": "Its README documents data-parallel fine-tuning with gradient checkpointing", "cite": "readme",
+                 "quote": "data-parallel LLM fine-tuning with gradient checkpointing"},
+                {"text": "Led the PyTorch distributed team at a major lab", "cite": "fabricated",
+                 "quote": "Led the PyTorch distributed team"},
             ],
         },
     },
@@ -90,9 +96,12 @@ PRESETS: list[dict] = [
             "fit_score": 0.88,
             "outreach": "Hi Mara — flock's xDS control plane is right in our wheelhouse. Would you be up for a conversation?",
             "claims": [
-                {"text": "Authors flock, a service-mesh control plane in Go", "cite": "repo"},
-                {"text": "Built a streaming xDS discovery server for Envoy sidecars", "cite": "readme"},
-                {"text": "Writes about reconciling sidecar state via xDS", "cite": "blog"},
+                {"text": "The flock repository describes a lightweight service mesh control plane", "cite": "repo",
+                 "quote": "a lightweight service mesh control plane"},
+                {"text": "Its README documents an xDS-speaking control plane for Envoy sidecars", "cite": "readme",
+                 "quote": "control plane speaking xDS to Envoy sidecars"},
+                {"text": "The linked blog discusses reconciling sidecar state", "cite": "blog",
+                 "quote": "reconciling sidecar state"},
             ],
         },
     },
@@ -115,9 +124,12 @@ PRESETS: list[dict] = [
             "fit_score": 0.84,
             "outreach": "Hi Devon — prismstyle's compile-time extraction is a great fit for our DX work. Open to chatting?",
             "claims": [
-                {"text": "Authors prismstyle, a zero-runtime type-safe CSS-in-TS library", "cite": "repo"},
-                {"text": "Implements compile-time CSS extraction from the type-checked AST", "cite": "readme"},
-                {"text": "Writes about removing the runtime cost of CSS-in-TS", "cite": "blog"},
+                {"text": "The prismstyle repository describes a zero-runtime, type-safe CSS-in-TS library", "cite": "repo",
+                 "quote": "a zero-runtime, type-safe CSS-in-TS library"},
+                {"text": "Its README documents compile-time extraction", "cite": "readme",
+                 "quote": "compile-time extraction"},
+                {"text": "The linked blog discusses removing the runtime cost of CSS-in-TS", "cite": "blog",
+                 "quote": "removes the runtime cost of CSS-in-TS"},
             ],
         },
     },
@@ -148,7 +160,8 @@ def _authored_response(preset: dict) -> str:
         "blog": p["blog"]["url"],
         "fabricated": ingest.blob_url(repo_url, branch, "internal/never-gathered.md"),
     }
-    claims = [{"text": c["text"], "citation": urls[c["cite"]]} for c in p["claims"]]
+    claims = [{"text": c["text"], "citation": urls[c["cite"]],
+               "supporting_quote": c["quote"]} for c in p["claims"]]
     return json.dumps({"fit_score": p["fit_score"], "claims": claims,
                        "unverified": [], "outreach_draft": p["outreach"]})
 

@@ -1,19 +1,24 @@
-import argparse, asyncio
+import argparse
+import asyncio
+
 from sourcerer.config import get_settings
-from sourcerer.models import Brief
-from sourcerer.github import HttpGitHub
-from sourcerer.web import HttpFetcher
-from sourcerer.llm import LiteLLMClient
-from sourcerer.pipeline import run
 from sourcerer.evals.scorers import grounding_score
+from sourcerer.github import HttpGitHub
+from sourcerer.llm import LiteLLMClient
+from sourcerer.models import Brief
+from sourcerer.pipeline import run_detailed
+from sourcerer.web import HttpFetcher
 
 
 async def _amain(brief: Brief) -> None:
     s = get_settings()
     llm = LiteLLMClient()
     async with HttpGitHub(s.github_token) as gh, HttpFetcher() as fetcher:
-        results = await run(brief, gh, fetcher, llm, s.model)
-    for assessment, bundle in results:
+        report = await run_detailed(brief, gh, fetcher, llm, s.model)
+    for failure in report.failures:
+        print(f"warning: {failure.login} failed during {failure.stage}: "
+              f"{failure.error_type}: {failure.message}")
+    for assessment, bundle in report.results:
         fid = assessment.grounding_fidelity
         fid_str = f", model-fidelity {fid:.2f}" if fid is not None else ""
         print(f"\n=== {assessment.candidate.name or assessment.candidate.login}  (fit {assessment.fit_score:.2f}, grounding {grounding_score(assessment, bundle):.2f}{fid_str}) ===")
@@ -26,7 +31,11 @@ async def _amain(brief: Brief) -> None:
 
 def main() -> None:
     p = argparse.ArgumentParser(prog="sourcerer")
-    p.add_argument("role"); p.add_argument("--lang", action="append", default=[])
-    p.add_argument("--topic", action="append", default=[]); p.add_argument("-n", "--max", type=int, default=1)
+    p.add_argument("role")
+    p.add_argument("--lang", action="append", default=[])
+    p.add_argument("--topic", action="append", default=[])
+    p.add_argument("--must-have", action="append", default=[])
+    p.add_argument("-n", "--max", type=int, default=1)
     a = p.parse_args()
-    asyncio.run(_amain(Brief(role=a.role, languages=a.lang, topics=a.topic, max_candidates=a.max)))
+    asyncio.run(_amain(Brief(role=a.role, languages=a.lang, topics=a.topic,
+                            must_have=a.must_have, max_candidates=a.max)))

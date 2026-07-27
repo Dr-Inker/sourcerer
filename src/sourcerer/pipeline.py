@@ -1,27 +1,58 @@
+import asyncio
 import sys
+from dataclasses import dataclass, field
 
-from sourcerer.models import Brief, Assessment, EvidenceBundle
 from sourcerer.discovery import discover
+from sourcerer.models import Assessment, EvidenceBundle
 from sourcerer.research import research
 from sourcerer.synthesis import synthesize
 from sourcerer.trace import traced
 
 
-async def run(brief, gh, fetcher, llm, model) -> list[tuple[Assessment, EvidenceBundle]]:
+@dataclass(frozen=True)
+class CandidateFailure:
+    login: str
+    stage: str
+    error_type: str
+    message: str
+
+
+@dataclass
+class RunReport:
+    results: list[tuple[Assessment, EvidenceBundle]] = field(default_factory=list)
+    failures: list[CandidateFailure] = field(default_factory=list)
+
+
+async def run_detailed(brief, gh, fetcher, llm, model, concurrency: int = 4) -> RunReport:
     async with traced("discover"):
         candidates = await discover(brief, gh)
-    out: list[tuple[Assessment, EvidenceBundle]] = []
-    for cand in candidates:
+    semaphore = asyncio.Semaphore(max(1, concurrency))
+
+    async def process(cand):
+        stage = "research"
         try:
-            async with traced("research"):
-                bundle = await research(cand, gh, fetcher)
-            async with traced("synthesize"):
-                assessment = await synthesize(cand, bundle, llm, model, brief=brief)
+            async with semaphore:
+                async with traced("research"):
+                    bundle = await research(cand, gh, fetcher)
+                stage = "synthesize"
+                async with traced("synthesize"):
+                    assessment = await synthesize(cand, bundle, llm, model, brief=brief)
         except Exception as e:
-            # Isolate per candidate: a GitHub rate-limit, a network error, or an LLM-provider
-            # error (LiteLLM's RateLimitError/APIError are NOT httpx.HTTPError) on one candidate
-            # must not sink the batch. Surfaced to stderr so failures aren't silent.
             print(f"warning: skipping candidate {cand.login}: {e!r}", file=sys.stderr)
-            continue
-        out.append((assessment, bundle))
-    return out
+            return CandidateFailure(login=cand.login, stage=stage,
+                                    error_type=type(e).__name__, message=str(e)[:500])
+        return assessment, bundle
+
+    outcomes = await asyncio.gather(*(process(cand) for cand in candidates))
+    report = RunReport()
+    for outcome in outcomes:
+        if isinstance(outcome, CandidateFailure):
+            report.failures.append(outcome)
+        else:
+            report.results.append(outcome)
+    return report
+
+
+async def run(brief, gh, fetcher, llm, model) -> list[tuple[Assessment, EvidenceBundle]]:
+    """Compatibility API. Use run_detailed when operational failure data matters."""
+    return (await run_detailed(brief, gh, fetcher, llm, model)).results

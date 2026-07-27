@@ -10,28 +10,37 @@
   },
   "fit_score": 0.84,
   "grounding_score": 1.0,
+  "quote_support_score": 1.0,
   "grounding_fidelity": 1.0,
   "claims": [
     {
-      "text": "Authors prismstyle, a zero-runtime type-safe CSS-in-TS library",
-      "citation": "https://example.com/gh/devon-ts/prismstyle"
+      "text": "The prismstyle repository describes a zero-runtime, type-safe CSS-in-TS library",
+      "citation": "https://example.com/gh/devon-ts/prismstyle",
+      "supporting_quote": "a zero-runtime, type-safe CSS-in-TS library"
     },
     {
-      "text": "Implements compile-time CSS extraction from the type-checked AST",
-      "citation": "https://example.com/gh/devon-ts/prismstyle/blob/main/README.md"
+      "text": "Its README documents compile-time extraction",
+      "citation": "https://example.com/gh/devon-ts/prismstyle/blob/main/README.md",
+      "supporting_quote": "compile-time extraction"
     },
     {
-      "text": "Writes about removing the runtime cost of CSS-in-TS",
-      "citation": "https://example.com/blog/devon"
+      "text": "The linked blog discusses removing the runtime cost of CSS-in-TS",
+      "citation": "https://example.com/blog/devon",
+      "supporting_quote": "removes the runtime cost of CSS-in-TS"
     }
   ],
   "unverified": [],
-  "outreach_draft": "Hi Devon — prismstyle's compile-time extraction is a great fit for our DX work. Open to chatting?",
+  "outreach_draft": "Hi Devon Park (sample persona) — I came across your public work and was interested to see that The prismstyle repository describes a zero-runtime, type-safe CSS-in-TS library. Would you be open to a brief conversation about a potentially relevant role?",
   "evidence": [
+    {
+      "kind": "github_profile",
+      "source_url": "https://example.com/gh/devon-ts",
+      "text": "GitHub profile for devon-ts. bio: type-safe styling & DX tooling followers: 2210"
+    },
     {
       "kind": "github_repo",
       "source_url": "https://example.com/gh/devon-ts/prismstyle",
-      "text": "prismstyle (TypeScript, ★2210): a zero-runtime, type-safe CSS-in-TS library"
+      "text": "prismstyle (TypeScript, ★2210; ownership not independently verified; repository appears on the user's repo list): a zero-runtime, type-safe CSS-in-TS library"
     },
     {
       "kind": "github_file",
@@ -52,25 +61,25 @@
   "spans": [
     {
       "name": "discover",
-      "ms": 0.0,
+      "ms": 0.03,
       "ok": true
     },
     {
       "name": "research.files",
-      "ms": 0.01,
+      "ms": 0.03,
       "ok": true
     },
     {
       "name": "research",
-      "ms": 0.02,
+      "ms": 0.05,
       "ok": true
     },
     {
       "name": "synthesize",
-      "ms": 0.02,
+      "ms": 0.07,
       "ok": true
     }
   ],
   "model": "illustrative fixture (offline)",
-  "generated_at": "2026-07-09T14:34:32.070052+00:00"
+  "generated_at": "2026-07-27T21:07:38.984277+00:00"
 }

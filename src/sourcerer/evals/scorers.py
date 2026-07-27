@@ -1,9 +1,34 @@
 from sourcerer.models import Assessment, EvidenceBundle
 
 
+def citation_completeness(assessment: Assessment) -> float:
+    """Non-vacuous output metric: an empty brief is not a perfectly grounded brief."""
+    return 1.0 if assessment.claims else 0.0
+
+
+def quote_support_score(assessment: Assessment, bundle: EvidenceBundle) -> float:
+    """Fraction of claims carrying a verbatim quote present in their cited evidence."""
+    if not assessment.claims:
+        return 0.0
+    evidence = {item.source_url: " ".join(item.text.lower().split()) for item in bundle.items}
+    supported = 0
+    for claim in assessment.claims:
+        quote = " ".join((claim.supporting_quote or "").lower().split())
+        supported += bool(quote and quote in evidence.get(claim.citation, ""))
+    return supported / len(assessment.claims)
+
+
+def reciprocal_rank(ranked_logins: list[str], expected_login: str) -> float:
+    """Standard retrieval metric used by the offline golden-set runner."""
+    try:
+        return 1.0 / (ranked_logins.index(expected_login) + 1)
+    except ValueError:
+        return 0.0
+
+
 def grounding_score(assessment: Assessment, bundle: EvidenceBundle) -> float:
     if not assessment.claims:
-        return 1.0
+        return 0.0
     urls = bundle.source_urls()
     grounded = sum(1 for c in assessment.claims if c.citation in urls)
     return grounded / len(assessment.claims)

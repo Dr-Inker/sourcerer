@@ -86,7 +86,7 @@ async function playStages(box, spans) {
 function renderResult(out, d) {
   const c = d.candidate || {};
   const claims = (d.claims || [])
-    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(safeUrl(cl.citation))}" target="_blank" rel="noopener noreferrer">source &#8599;</a></li>`)
+    .map((cl) => `<li>${esc(cl.text)} <a class="cite" href="${esc(safeUrl(cl.citation))}" target="_blank" rel="noopener noreferrer">source &#8599;</a>${cl.supporting_quote ? `<blockquote>${esc(cl.supporting_quote)}</blockquote>` : ""}</li>`)
     .join("");
   const unverified = (d.unverified || []).map((u) => `<li>${esc(u)}</li>`).join("");
   const sources = (d.evidence || [])
@@ -98,10 +98,11 @@ function renderResult(out, d) {
       <div class="scores">
         <span class="score">fit <b>${(d.fit_score ?? 0).toFixed(2)}</b></span>
         <span class="score grounded">grounding <b>${(d.grounding_score ?? 0).toFixed(2)}</b></span>
+        <span class="score grounded" title="Fraction of claims with an exact supporting excerpt found in the cited evidence.">quote support <b>${(d.quote_support_score ?? 0).toFixed(2)}</b></span>
         ${d.grounding_fidelity == null ? "" : `<span class="score fidelity" title="Fraction of the model's raw asserted claims whose citation was actually gathered — drops below 1.00 when the model fabricates a source.">model fidelity <b>${d.grounding_fidelity.toFixed(2)}</b></span>`}
       </div>
     </div>
-    <h4>Grounded claims <span class="muted">(each cites real evidence)</span></h4>
+    <h4>Grounded claims <span class="muted">(each cites evidence and an exact excerpt)</span></h4>
     <ul class="claims">${claims || '<li class="muted">none</li>'}</ul>
     ${unverified ? `<h4>Unverified <span class="muted">&mdash; stated, but the agent refused to assert it</span></h4><ul class="unverified">${unverified}</ul>` : ""}
     <h4>Outreach draft</h4>

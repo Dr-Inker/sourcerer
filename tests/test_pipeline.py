@@ -1,11 +1,14 @@
 import json
-from sourcerer.pipeline import run
-from sourcerer.models import Brief
-from sourcerer.github import MockGitHub
-from sourcerer.web import MockFetcher, PageContent
-from sourcerer.llm import MockLLM
+
 from sourcerer.evals.scorers import grounding_score
-from sourcerer.trace import reset_spans, get_spans
+from sourcerer.github import MockGitHub
+from sourcerer.llm import MockLLM
+from sourcerer.models import Brief
+from sourcerer.pipeline import run, run_detailed
+from sourcerer.trace import get_spans, reset_spans
+from sourcerer.web import MockFetcher, PageContent
+
+
 async def test_end_to_end_one_candidate_is_grounded():
     reset_spans()
     gh = MockGitHub(
@@ -13,7 +16,9 @@ async def test_end_to_end_one_candidate_is_grounded():
         repos={"rustdev": [{"name": "fastdb", "language": "Rust", "stargazers_count": 900, "html_url": "https://github.com/rustdev/fastdb", "description": "embedded db"}]})
     fetcher = MockFetcher({"https://rusty.dev": PageContent(url="https://rusty.dev", title="Rusty", text="I build embedded Rust databases")})
     payload = json.dumps({"fit_score": 0.92,
-        "claims": [{"text": "Authored fastdb, an embedded Rust DB", "citation": "https://github.com/rustdev/fastdb"}],
+        "claims": [{"text": "The fastdb repository describes an embedded db",
+                    "citation": "https://github.com/rustdev/fastdb",
+                    "supporting_quote": "embedded db"}],
         "unverified": [], "outreach_draft": "Hi Rusty — loved fastdb..."})
     llm = MockLLM(lambda s, u: payload)
     results = await run(Brief(role="Rust systems engineer", languages=["rust"], max_candidates=1), gh, fetcher, llm, model="m")
@@ -57,3 +62,15 @@ async def test_run_isolates_a_candidate_whose_llm_call_raises_non_httpx():
     llm = MockLLM(responder)
     results = await run(Brief(role="Go dev", languages=["go"], max_candidates=2), gh, fetcher, llm, model="m")
     assert [a.candidate.login for a, _ in results] == ["b"]
+
+
+async def test_detailed_run_exposes_typed_candidate_failures():
+    gh = MockGitHub(
+        users=[{"login": "a", "html_url": "https://github.com/a", "bio": "Go developer"}],
+        repos={}, fail_repos={"a"})
+    report = await run_detailed(Brief(role="Go developer"), gh, MockFetcher({}),
+                                MockLLM(lambda s, u: "{}"), model="m")
+    assert report.results == []
+    assert report.failures[0].login == "a"
+    assert report.failures[0].stage == "research"
+    assert report.failures[0].error_type == "HTTPStatusError"

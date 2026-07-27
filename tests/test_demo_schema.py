@@ -1,6 +1,7 @@
 import json
-from sourcerer.models import Brief, Candidate, Evidence, EvidenceBundle, Claim, Assessment
-from sourcerer.demo.schema import to_demo_run, DemoRun
+
+from sourcerer.demo.schema import DemoRun, to_demo_run
+from sourcerer.models import Assessment, Brief, Candidate, Claim, Evidence, EvidenceBundle
 
 
 def _fixture():
@@ -59,8 +60,8 @@ def test_demo_run_json_round_trips():
 
 
 def test_ungrounded_claim_gives_zero_grounding_score():
-    from sourcerer.models import Brief, Candidate, Evidence, EvidenceBundle, Claim, Assessment
     from sourcerer.demo.schema import to_demo_run
+    from sourcerer.models import Assessment, Brief, Candidate, Claim, Evidence, EvidenceBundle
     cand = Candidate(login="x", profile_url="https://github.com/x")
     bundle = EvidenceBundle(candidate=cand, items=[
         Evidence(source_url="https://github.com/x/r", kind="github_repo", text="t")])

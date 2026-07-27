@@ -25,11 +25,11 @@
       <h1>Sourcerer</h1>
       <p class="tagline">An AI technical-sourcing agent. It finds an engineer, researches them
         from public sources, and writes a <strong>grounded, cited</strong> fit-brief — every claim
-        must point at real evidence, or it doesn't get made.</p>
+        must cite real evidence with an exact supporting excerpt, or it doesn't get made.</p>
     </header>
     <section class="how">
       <p>Pick a role to replay a <strong>cached sample run</strong> <code>discover &rarr; research &rarr; synthesize</code>, then read
-        the brief — with the <strong>grounding score</strong>, clickable citations, and the
+        the brief — with <strong>citation and quote-support scores</strong>, clickable citations, and the
         <strong>&ldquo;unverified&rdquo; list</strong> of things it refused to assert.
         <a href="https://github.com/Dr-Inker/sourcerer" target="_blank" rel="noopener noreferrer">Source on GitHub &#8599;</a></p>
     </section>
@@ -44,7 +44,7 @@
     <section class="built">
       <h2>How it&rsquo;s built</h2>
       <ul>
-        <li><strong>Grounded, fail-closed.</strong> Every claim must cite a real evidence URL; anything the model can&rsquo;t ground is demoted to the &ldquo;unverified&rdquo; list <em>in code</em> — not left to prompt discipline.</li>
+        <li><strong>Grounded, fail-closed.</strong> Every claim must cite a gathered URL and an exact excerpt found in that evidence; unsupported claims are demoted <em>in code</em>. Outreach is rebuilt only from surviving claims.</li>
         <li><strong>Clean async pipeline.</strong> <code>discover &rarr; research &rarr; synthesize</code>, with every external dependency (GitHub, web, LLM) behind a <code>typing.Protocol</code> and a deterministic mock — so the whole pipeline is unit-tested with zero network.</li>
         <li><strong>Safe by construction.</strong> Robots-aware, SSRF-guarded fetch (loopback / private / cloud-metadata blocked); public sources only; secrets from the environment.</li>
         <li><strong>Tested &amp; shipped.</strong> A network-free test suite + CI, built test-first; GLM-5.1 via LiteLLM (swap the model with one env var).</li>

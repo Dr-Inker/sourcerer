@@ -3,7 +3,7 @@ import asyncio
 import httpx
 import pytest
 
-from sourcerer.github import MockGitHub, HttpGitHub
+from sourcerer.github import HttpGitHub, MockGitHub
 
 
 async def test_mock_search_and_repos():

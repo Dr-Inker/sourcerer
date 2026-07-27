@@ -1,8 +1,8 @@
-from sourcerer.research import research
-from sourcerer.models import Candidate
-from sourcerer.github import MockGitHub
-from sourcerer.web import MockFetcher, PageContent
 from sourcerer import ingest
+from sourcerer.github import MockGitHub
+from sourcerer.models import Candidate
+from sourcerer.research import research
+from sourcerer.web import MockFetcher, PageContent
 
 
 async def test_research_collects_repo_and_blog_evidence():
@@ -69,3 +69,17 @@ async def test_research_missing_default_branch_falls_back_to_head():
          "html_url": "https://github.com/rustdev/fastdb", "description": "embedded db"}]})
     bundle = await research(cand, gh, MockFetcher({}))
     assert any(e.kind == "github_repo" for e in bundle.items)
+
+
+async def test_research_records_profile_provenance_and_skips_forks_and_archives():
+    cand = Candidate(login="x", profile_url="https://github.com/x", signals={"bio": "Rust"})
+    repos = [
+        {"name": "forked", "html_url": "https://github.com/x/forked", "fork": True},
+        {"name": "old", "html_url": "https://github.com/x/old", "archived": True},
+        {"name": "owned", "html_url": "https://github.com/x/owned",
+         "owner": {"login": "x"}, "language": "Rust"},
+    ]
+    bundle = await research(cand, MockGitHub(users=[], repos={"x": repos}), MockFetcher({}))
+    assert bundle.items[0].kind == "github_profile"
+    assert "owner=x" in next(e.text for e in bundle.items if e.kind == "github_repo")
+    assert not any("forked" in e.source_url or "/old" in e.source_url for e in bundle.items)

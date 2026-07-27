@@ -1,11 +1,17 @@
 import json
-from sourcerer.github import MockGitHub
-from sourcerer.web import MockFetcher, PageContent
-from sourcerer.llm import MockLLM
-from sourcerer.demo.schema import DemoRun, DemoCandidate
+
 from sourcerer.demo.generate import (
-    PRESETS, preset_to_brief, build_manifest, generate_one, write_demo, fixture_clients,
+    PRESETS,
+    build_manifest,
+    fixture_clients,
+    generate_one,
+    preset_to_brief,
+    write_demo,
 )
+from sourcerer.demo.schema import DemoCandidate, DemoRun
+from sourcerer.github import MockGitHub
+from sourcerer.llm import MockLLM
+from sourcerer.web import MockFetcher, PageContent
 
 
 def test_all_shipped_fixtures_are_fictional_example_com():
@@ -66,7 +72,9 @@ async def test_generate_one_with_mocks_produces_grounded_demo_run():
     fetcher = MockFetcher({"https://rusty.dev": PageContent(
         url="https://rusty.dev", title="Rusty", text="I build embedded Rust databases")})
     payload = json.dumps({"fit_score": 0.92,
-        "claims": [{"text": "Authored fastdb", "citation": "https://github.com/rustdev/fastdb"}],
+        "claims": [{"text": "The repository describes an embedded db",
+                    "citation": "https://github.com/rustdev/fastdb",
+                    "supporting_quote": "embedded db"}],
         "unverified": [], "outreach_draft": "Hi Rusty"})
     run = await generate_one(preset, gh, fetcher, MockLLM(lambda s, u: payload),
                              model="m", generated_at="t")
@@ -90,10 +98,11 @@ def test_write_demo_writes_manifest_and_per_slug(tmp_path):
 
 async def test_generate_one_raises_when_no_candidates():
     import pytest
-    from sourcerer.github import MockGitHub
-    from sourcerer.web import MockFetcher
-    from sourcerer.llm import MockLLM
+
     from sourcerer.demo.generate import generate_one
+    from sourcerer.github import MockGitHub
+    from sourcerer.llm import MockLLM
+    from sourcerer.web import MockFetcher
     preset = {"slug": "empty", "label": "E", "role": "Nobody", "languages": ["cobol"]}
     with pytest.raises(ValueError):
         await generate_one(preset, MockGitHub(users=[], repos={}), MockFetcher({}),

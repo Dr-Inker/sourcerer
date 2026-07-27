@@ -1,8 +1,8 @@
-from sourcerer.models import Candidate, Evidence, EvidenceBundle
-from sourcerer.github import GitHubClient
-from sourcerer.web import Fetcher
-from sourcerer.trace import traced
 from sourcerer import ingest
+from sourcerer.github import GitHubClient
+from sourcerer.models import Candidate, Evidence, EvidenceBundle
+from sourcerer.trace import traced
+from sourcerer.web import Fetcher
 
 
 async def _ingest_repo_files(gh: GitHubClient, login: str, repo: dict, budget: list[int]) -> list[Evidence]:
@@ -40,12 +40,25 @@ async def _ingest_repo_files(gh: GitHubClient, login: str, repo: dict, budget: l
 
 
 async def research(candidate: Candidate, gh: GitHubClient, fetcher: Fetcher) -> EvidenceBundle:
-    items: list[Evidence] = []
+    profile_bits = [f"GitHub profile for {candidate.login}."]
+    for key in ("bio", "followers"):
+        if candidate.signals.get(key) not in (None, ""):
+            profile_bits.append(f"{key}: {candidate.signals[key]}")
+    items: list[Evidence] = [Evidence(
+        source_url=candidate.profile_url, kind="github_profile", text=" ".join(profile_bits)
+    )]
     budget = [ingest.MAX_TOTAL_EVIDENCE_BYTES]
     for repo in await gh.list_repos(candidate.login, limit=5):
+        # Forks and archived repositories are weak evidence of current authorship/ability.
+        if repo.get("fork") or repo.get("archived"):
+            continue
+        owner = (repo.get("owner") or {}).get("login")
+        provenance = (f"owner={owner}" if owner else
+                      "ownership not independently verified; repository appears on the user's repo list")
         items.append(Evidence(
             source_url=repo["html_url"], kind="github_repo",
-            text=f'{repo["name"]} ({repo.get("language")}, ★{repo.get("stargazers_count",0)}): {repo.get("description") or ""}',
+            text=(f'{repo["name"]} ({repo.get("language")}, ★{repo.get("stargazers_count",0)}; '
+                  f'{provenance}): {repo.get("description") or ""}'),
         ))
         async with traced("research.files"):
             items.extend(await _ingest_repo_files(gh, candidate.login, repo, budget))

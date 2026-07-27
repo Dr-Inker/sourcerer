@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+DEFAULT_MODEL = "openrouter/z-ai/glm-5.1"
+
 
 @dataclass(frozen=True)
 class Settings:
@@ -20,5 +22,5 @@ def get_settings() -> Settings:
     return Settings(
         github_token=os.getenv("GITHUB_TOKEN"),
         openrouter_api_key=os.getenv("OPENROUTER_API_KEY"),
-        model=os.getenv("SOURCERER_MODEL", "openrouter/z-ai/glm-5.1"),
+        model=os.getenv("SOURCERER_MODEL") or DEFAULT_MODEL,
     )

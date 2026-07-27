@@ -1,5 +1,7 @@
 # Sourcerer — Phase 1 (Vertical Slice) Implementation Plan
 
+> Historical implementation plan. For shipped behavior and current limitations, see [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** A CLI that takes a sourcing brief, discovers one GitHub candidate, researches them (GitHub API + one deterministic web source), and produces a *grounded, cited* fit-brief + personalized outreach draft — with eval scorers and tracing proving it works.

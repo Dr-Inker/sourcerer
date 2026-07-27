@@ -23,6 +23,7 @@ h4{margin:22px 0 8px}
 .muted{color:var(--muted)}
 ul{margin:.2em 0;padding-left:1.2em}
 .claims li{margin:.3em 0}
+.claims blockquote{margin:.35em 0 .7em;padding:.25em .65em;border-left:2px solid var(--accent);color:var(--muted);font-size:.9rem}
 .cite{font-size:.85rem}
 .unverified li{color:var(--muted)}
 .outreach{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;white-space:pre-wrap}

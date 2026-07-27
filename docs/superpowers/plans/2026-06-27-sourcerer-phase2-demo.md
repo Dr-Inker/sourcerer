@@ -1,5 +1,7 @@
 # Sourcerer Phase-2 Increment 1 — Public demo at /sourcerer/ — Implementation Plan
 
+> Historical implementation plan. For shipped behavior and current limitations, see [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ship a pure-static, precomputed-replay demo of the Sourcerer pipeline at `drinkerlabs.info/sourcerer/` that foregrounds grounded, cited candidate briefs — with no live compute, secrets, or abuse surface on the public path.

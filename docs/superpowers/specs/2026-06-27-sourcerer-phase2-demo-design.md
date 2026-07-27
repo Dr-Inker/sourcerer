@@ -1,5 +1,7 @@
 # Sourcerer — Phase 2, Increment 1: Public demo at drinkerlabs.info/sourcerer/
 
+> Historical design record. For shipped behavior and current limitations, see [`../../CURRENT_STATE.md`](../../CURRENT_STATE.md).
+
 **Status:** Design approved 2026-06-27. Successor work to the [Phase-1 vertical slice](2026-06-27-sourcerer-design.md) (the `discover → research → synthesize` pipeline with fail-closed citation grounding, shipped and merged).
 
 **Goal:** Put a *usable, visible* Sourcerer on the portfolio site that foregrounds its differentiator — **honest, grounded, cited candidate briefs** — without exposing live compute, secrets, or an abuse surface on the public server.

@@ -1,4 +1,4 @@
-from typing import Protocol, Callable
+from typing import Callable, Protocol
 
 
 class LLMClient(Protocol):
